@@ -12,7 +12,9 @@
 package org.csc478.pokerGame.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerHand {
   //#region Private Constants . . .
@@ -37,6 +39,12 @@ public class PlayerHand {
   //#endregion Private Constants . . .
 
   //#region Object Variables . . .
+
+  /** Player ID this hand belongs to */
+  private UUID _playerId;
+
+  /** Index of this player within the game - for convenience */
+  private int _gamePlayerIndex;
 
   /** Number of cards currently in this hand */
   private int _numberOfCardsInHand;
@@ -100,6 +108,35 @@ public class PlayerHand {
 
     return cardsToReturn;
   }
+
+  /**
+   * Get a sorted list of cards.  Note that this invalidates position-based hand tracking
+   * @param faceUpOnly True to return only face-up cards, false to return all cards
+   * @return List of playing cards, sorted by Rank and Suit
+   */
+  public List<PlayingCard> getSortedCards(final boolean faceUpOnly)
+  {
+    List<PlayingCard> cards;
+
+    // **** get the correct list ****
+
+    if (faceUpOnly)
+    {
+      cards = getFaceUpCards();
+    }
+    else
+    {
+      cards = getCards();
+    }
+
+    // **** create a sorted list ****
+
+    Collections.sort(cards, new PlayingCard.CardSorter());
+
+    // **** return our list ****
+
+    return cards;
+  }
   
   /**
    * Add a card to a hand
@@ -126,16 +163,58 @@ public class PlayerHand {
     return _numberOfCardsInHand;
   }
 
+  /**
+   * Set the cards for this hand
+   * @param cards Cards to use in this hand 
+   * @return Number of cards now in the hand
+   */
+  public int setCards(final List<PlayingCard> cards)
+  {
+    // **** check for too many cards ****
+
+    if (cards.size() > _handSize)
+    {
+      return -1;
+    }
+
+    // **** set our cards ****
+
+    _cardsInHand = (PlayingCard[])cards.toArray();
+    _numberOfCardsInHand = _cardsInHand.length;
+
+    // **** return our number of cards ****
+
+    return _numberOfCardsInHand;
+  }
+
+  /**
+   * Get the Player ID this hand belongs to
+   * @return UUID of the player this hand belongs to
+   */
+  public UUID getPlayerId() { return _playerId; }
+
+  /**
+   * Get the Game PlayerIndex this hand belongs to
+   * @return Index of the player within the game this hand belongs to
+   */
+  public int getGamePlayerIndex() { return _gamePlayerIndex; }
 
   //#endregion Accessors and Mutators . . .
 
   //#region Constructors . . .
 
   /**
-   * Default constructor - makes an empty hand
+   * Create an empty hand for a player within a game
+   * @param playerId UUID for the player this hand relates to
+   * @param gamePlayerIndex Index of the player within the game, for convenience
    */
-  public PlayerHand()
+  public PlayerHand(UUID playerId, int gamePlayerIndex)
   {
+    // **** set player information ****
+
+    _playerId = playerId;
+    _gamePlayerIndex = gamePlayerIndex;
+
     // **** create our card array ****
 
     _cardsInHand = new PlayingCard[_handSize];

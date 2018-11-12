@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PlayingCard.java
  *  created: 2018-11-09 13:03:08
  *       by: Gino Canessa
- * modified: 2018-11-09
+ * modified: 2018-11-12
  *       by: Gino Canessa
  *
  *  summary: A standard playing card, with Suit and Rank.
@@ -12,6 +12,7 @@
 package org.csc478.pokerGame.models;
 
 import java.security.InvalidParameterException;
+import java.util.Comparator;
 
 public class PlayingCard {
   //#region Private Constants . . .
@@ -26,13 +27,13 @@ public class PlayingCard {
   private static final int _cardSuitInvalidHigh = 0x50;
 
   /** Invalid card rank (low invalid boundary) */
-  private static final int _cardRankInvalidLow = 0x00;
+  private static final int _cardRankInvalidLow = 0x01;
 
   /** The lowest valid card rank (low valid boundary) */
-  private static final int _cardRankFirst = 0x01;
+  private static final int _cardRankFirst = 0x02;
 
   /** Invalid card rank (high invalid boundary) */
-  private static final int _cardRankInvalidHigh = 0x0E;
+  private static final int _cardRankInvalidHigh = 0x0F;
 
   //#endregion Private Constants . . .
 
@@ -60,7 +61,7 @@ public class PlayingCard {
 
 
   /**   The card rank ace. */
-  public static final int CardRankAce = 0x01;
+  // public static final int CardRankAce = 0x01;
   /**   The card rank two. */
   public static final int CardRankTwo = 0x02;
   /**   The card rank three. */
@@ -85,6 +86,8 @@ public class PlayingCard {
   public static final int CardRankQueen = 0x0C;
   /**   The card rank king. */
   public static final int CardRankKing = 0x0D;
+  /**   The card rank ace */
+  public static final int CardRankAce = 0x0E;
 
   //#endregion Public Constants . . .
 
@@ -109,6 +112,17 @@ public class PlayingCard {
    */
   public void setCardState(final int cardState) { _cardState = cardState;}
 
+  /**
+   * Gets this card's rank
+   * @return This card's rank
+   */
+  public int getCardRank() { return RankFromValue(_suitRank); }
+
+  /**
+   * Get this card's suit
+   * @return This card's suit
+   */
+  public int getCardSuit() { return SuitFromValue(_suitRank); }
 
   //#endregion Accessors and Mutators . . .
 
@@ -155,9 +169,9 @@ public class PlayingCard {
       throw new InvalidParameterException(String.format("Invalid card request, deck index: %d", cardIndexInDeck));
     }
 
-    // **** 13 cards per suit, shit suit, add in 1 to offset first card so that values match ranks (Ace is first) ****
+    // **** 13 cards per suit, shit suit, add in 2 to offset first card so that values match ranks (Two is first) ****
 
-    _suitRank = (cardIndexInDeck % 13) + ((int)(cardIndexInDeck / 13) << 4) + 1;
+    _suitRank = (cardIndexInDeck % 13) + ((int)(cardIndexInDeck / 13) << 4) + 2;
 
     // **** start with card in deck ****
 
@@ -189,6 +203,16 @@ public class PlayingCard {
   }
 
   /**
+   * Create a RankSuit (for sorting) from a SuitRank
+   * @param value SuitRank
+   * @return RankSuit
+   */
+  private static final int RankSuitFromValue(final int value)
+  {
+    return ((value & 0x0F) << 4) + ((value & 0xF0) >> 4);
+  }
+
+  /**
    * Check to see if 'value' results in a valid card SuitRank
    * @param value Combined SuitRank value
    * @return True if valid, false if not.
@@ -203,7 +227,21 @@ public class PlayingCard {
             (suit > _cardSuitInvalidLow) &&
             (suit < _cardSuitInvalidHigh));
   }
-
   //#endregion Internal Functions . . .
+
+    //#region Internal Classes . . .
+
+    static class CardSorter implements Comparator<PlayingCard>
+    {
+      public int compare(PlayingCard lhs, PlayingCard rhs)
+      {
+        // **** sort by rank, then suit ****
+
+        return RankSuitFromValue(lhs._suitRank) - RankSuitFromValue(rhs._suitRank);
+      }
+    }
+  
+    //#endregion Internal Classes . . .
+  
 }
 

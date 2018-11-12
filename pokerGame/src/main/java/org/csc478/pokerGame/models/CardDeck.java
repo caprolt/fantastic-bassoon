@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\CardDeck.java
  *  created: 2018-11-09 13:03:35
  *       by: Gino Canessa
- * modified: 2018-11-09
+ * modified: 2018-11-12
  *       by: Gino Canessa
  *
  *  summary: A deck of playing cards.
