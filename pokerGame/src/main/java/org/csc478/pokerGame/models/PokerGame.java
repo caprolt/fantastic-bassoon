@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PokerGame.java
  *  created: 2018-11-09 13:09:08
  *       by: Gino Canessa
- * modified: 2018-11-09
+ * modified: 2018-11-12
  *       by: Gino Canessa
  *
  *  summary: Internal representation of a single game of poker
@@ -78,43 +78,46 @@ public class PokerGame {
   /** Amount (in dollars) of the current pot */
   private int _potValue;
 
+  /** List of actions which have occured in this game */
+  private List<GameAction> _actions;
+
   //#endregion Object Variables . . .
 
   //#region Accessors and Mutators . . .
 
   /**
    * Gets the Ante (in dollars) for this game
-   * @return
+   * @return The ante (in dollars) for thi game
    */
   public int getAnte() { return _ante; }
 
   /**
    * Gets the Low Stake Limit (in dollars) for this game
-   * @return
+   * @return The Low Stake Limit (in dollars) for this game
    */
   public int getLowStake() { return _lowStake; }
 
   /**
    * Gets the High Stake Limit (in dollars) for this game
-   * @return
+   * @return The High Stake Limit (in dollars) for this game
    */
   public int getHighStake() { return _highStake; }
 
   /**
    * Gets the Number of Players in this game
-   * @return
+   * @return The Number of Players in this game
    */
   public int getNumberOfPlayers() { return _players.size(); }
 
   /**
    * Get the current round number of the game
-   * @return
+   * @return The current round number of the game
    */
   public int getRoundNumber() { return _currentRound; }
 
   /**
    * Get the state of the current round of play
-   * @return
+   * @return The state of the current round of play
    */
   public int getRoundState() { return _currentRoundState; }
 
@@ -122,6 +125,12 @@ public class PokerGame {
 
   //#region Constructors . . .
 
+  /**
+   * Create a game of poker with the specified ante and stakes
+   * @param ante The ante for this game (0 or more)
+   * @param lowStake The low stake for this game (1 or more, must be lower than highStake)
+   * @param highStake The high stake for this game (2 or more, must be higher than lowStake)
+   */
   public PokerGame(
     final int ante,
     final int lowStake,
@@ -186,7 +195,7 @@ public class PokerGame {
 
   /**
    * Add a player to the game
-   * @param player
+   * @param player Player to add to this game
    * @return Number of players in the game
    * @throws InvalidActivityException Attempt to exceed the allowed number of players
    */
@@ -208,11 +217,14 @@ public class PokerGame {
     return _players.size();
   }
 
+  // TODO(gino): add these
   // Start Game
+  // Add action
+
 
   /**
-   * Check to see if this game can start ****
-   * @return
+   * Check to see if this game can be started right now
+   * @return True if game is in a state which can be started, false if not
    */
   public boolean CanGameStart()
   {

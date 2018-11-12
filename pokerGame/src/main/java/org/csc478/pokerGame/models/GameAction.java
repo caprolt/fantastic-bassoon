@@ -61,43 +61,43 @@ public class GameAction {
 
   /**
    * Gets the game action id for this action
-   * @return
+   * @return UUID representing this game action
    */
   public UUID getGameActionId() { return _gameActionId; }
 
   /**
    * Gets the player id for the player which perfomed the action
-   * @return
+   * @return UUID representing the player that performed this action
    */
   public UUID getPlayerId() { return _playerId; }
   
   /**
    * Gets the id of the game which this action was performed in
-   * @return
+   * @return UUID representing the game this action was performed in
    */
   public UUID getPokerGameId() { return _pokerGameId; }
 
   /**
    * Gets the action type for this action
-   * @return
+   * @return Action type of this action
    */
   public char getActionType() { return _actionType; }
 
   /**
    * Gets the round number this action was performed in
-   * @return
+   * @return Round number this action was performed in
    */
   public int getRoundNumber() { return _roundNumber; }
 
   /**
    * Gets the game action number (sequential) for this action
-   * @return
+   * @return Game action number (sequential within game) for this action
    */
   public int getGameActionNumber() { return _gameActionNumber; }
 
   /**
    * Gets the date and time this action was performed
-   * @return
+   * @return Date (and time) this action was performed at
    */
   public Date getActionPerformedDateTime() { return _actionPerformedDateTime; }
 

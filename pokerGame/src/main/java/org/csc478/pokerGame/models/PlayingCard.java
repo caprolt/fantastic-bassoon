@@ -105,7 +105,7 @@ public class PlayingCard {
 
   /**
    * Sets the current card state
-   * @param cardState
+   * @param cardState Card state of this card
    */
   public void setCardState(final int cardState) { _cardState = cardState;}
 
@@ -116,8 +116,8 @@ public class PlayingCard {
 
   /**
    * Create a playing card with a specified suit and rank
-   * @param suit
-   * @param rank
+   * @param suit Suit of this card (e.g., CardSuitClubs)
+   * @param rank Rank of this card (e.g., CardRankAce)
    */
   public PlayingCard(final int suit, final int rank) {
     // **** check our suit and rank to make sure they result in a valid card ****
@@ -142,6 +142,10 @@ public class PlayingCard {
     _cardState = CardStateInDeck;
   }
   
+  /**
+   * Create a playing card based on the location within a sorted deck
+   * @param cardIndexInDeck 0-based index for card location in deck
+   */
   public PlayingCard(final int cardIndexInDeck)
   {
     if ((cardIndexInDeck < 0) || (cardIndexInDeck > 51))
@@ -166,7 +170,7 @@ public class PlayingCard {
 
   /**
    * Get a card's suit from a SuitRank value
-   * @param value
+   * @param value Combined SuitRank value
    * @return Card Suit
    */
   private static final int SuitFromValue(final int value)
@@ -176,7 +180,7 @@ public class PlayingCard {
 
   /**
    * Get a card's rank from a SuitRank value
-   * @param value
+   * @param value Combined SuitRank value
    * @return Card Rank
    */
   private static final int RankFromValue(final int value)
@@ -186,7 +190,7 @@ public class PlayingCard {
 
   /**
    * Check to see if 'value' results in a valid card SuitRank
-   * @param value
+   * @param value Combined SuitRank value
    * @return True if valid, false if not.
    */
   private static final boolean IsValidCard(final int value)

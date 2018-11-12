@@ -62,7 +62,7 @@ public class CardDeck {
 
   /**
    * Get the card within the deck at the specified index
-   * @param cardIndex
+   * @param cardIndex 0-based index of the card in the deck
    * @return The playing card
    */
   public PlayingCard CardAt(final int cardIndex)
