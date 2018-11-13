@@ -136,7 +136,7 @@ public class PlayingCard {
   public PlayingCard(final int suit, final int rank) {
     // **** check our suit and rank to make sure they result in a valid card ****
 
-    int suitRank = suit & rank;
+    int suitRank = suit | rank;
 
     // **** check to see if this suitRank is invalid ****
 
@@ -171,7 +171,12 @@ public class PlayingCard {
 
     // **** 13 cards per suit, shit suit, add in 2 to offset first card so that values match ranks (Two is first) ****
 
-    _suitRank = (cardIndexInDeck % 13) + ((int)(cardIndexInDeck / 13) << 4) + 2;
+    int suit = ((int)(cardIndexInDeck / 13) + (_cardSuitFirst >> 4)) << 4;
+    int rank = (cardIndexInDeck % 13) + _cardRankFirst;
+
+    _suitRank = suit | rank;
+
+    // _suitRank = (cardIndexInDeck % 13) + ((int)(cardIndexInDeck / 13) << 4) + 2;
 
     // **** start with card in deck ****
 
@@ -209,7 +214,7 @@ public class PlayingCard {
    */
   private static final int RankSuitFromValue(final int value)
   {
-    return ((value & 0x0F) << 4) + ((value & 0xF0) >> 4);
+    return ((value & 0x0F) << 4) | ((value & 0xF0) >> 4);
   }
 
   /**

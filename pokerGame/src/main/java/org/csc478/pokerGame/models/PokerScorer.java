@@ -13,26 +13,24 @@ package org.csc478.pokerGame.models;
 
 import java.util.List;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.UUID;
 
-import javax.swing.SortOrder;
 
 public abstract class PokerScorer {
 
   //#region Public Constants . . .
 
-  public static final int ScoreRankingUnknown       = 0x00;
-  public static final int ScoreRankingHighCard      = 0x01;
-  public static final int ScoreRankingOnePair       = 0x02;
-  public static final int ScoreRankingTwoPairs      = 0x03;
-  public static final int ScoreRankingThreeOfAKind  = 0x04;
-  public static final int ScoreRankingStraight      = 0x05;
-  public static final int ScoreRankingFlush         = 0x06;
-  public static final int ScoreRankingFullHouse     = 0x07;
-  public static final int ScoreRankingFourOfAKind   = 0x08;
-  public static final int ScoreRankingStraightFlush = 0x09;
-  public static final int ScoreRankingRoyalFlush    = 0x0A;
+  public static final int ScoreTypeUnknown       = 0x00;
+  public static final int ScoreTypeHighCard      = 0x01;
+  public static final int ScoreTypeOnePair       = 0x02;
+  public static final int ScoreTypeTwoPairs      = 0x03;
+  public static final int ScoreTypeThreeOfAKind  = 0x04;
+  public static final int ScoreTypeStraight      = 0x05;
+  public static final int ScoreTypeFlush         = 0x06;
+  public static final int ScoreTypeFullHouse     = 0x07;
+  public static final int ScoreTypeFourOfAKind   = 0x08;
+  public static final int ScoreTypeStraightFlush = 0x09;
+  public static final int ScoreTypeRoyalFlush    = 0x0A;
 
   //#endregion Public Constants . . .
 
@@ -52,7 +50,7 @@ public abstract class PokerScorer {
    * @param scoreOnlyFaceUp True to score only face-up cards, false to score all cards
    * @return Unique player ID for the player with the current highest score
    */
-  public UUID getWinningPlayerId(final List<PlayerHand> hands, final boolean scoreOnlyFaceUp)
+  public static UUID getWinningPlayerId(final List<PlayerHand> hands, final boolean scoreOnlyFaceUp)
   {
     // **** sanity check ****
 
@@ -76,7 +74,7 @@ public abstract class PokerScorer {
    * @param scoreOnlyFaceUp True to score only face-up cards, false to score all cards
    * @return Game Player Index of the player with the current highest score
    */
-  public int getWinningGamePlayerIndex(final List<PlayerHand> hands, final boolean scoreOnlyFaceUp)
+  public static int getWinningGamePlayerIndex(final List<PlayerHand> hands, final boolean scoreOnlyFaceUp)
   {
     // **** sanity check ****
 
@@ -104,7 +102,7 @@ public abstract class PokerScorer {
    * @param scoreOnlyFaceUp True to score only face-up cards, false to score all cards in hand
    * @return Index of the highest scoring hand
    */
-  private int getHighScoreHandIndex(final List<PlayerHand> hands, final boolean scoreOnlyFaceUp)
+  private static int getHighScoreHandIndex(final List<PlayerHand> hands, final boolean scoreOnlyFaceUp)
   {
     int highestHandIndex = -1;
     int highScore = -1;
@@ -142,13 +140,13 @@ public abstract class PokerScorer {
    * @param sortedCards List of sorted cards to score
    * @return Highest score value possible of up to any 5 cards from this hand
    */
-  private int getScoreForSortedCards(final List<PlayingCard> sortedCards)
+  public static int getScoreForSortedCards(final List<PlayingCard> sortedCards)
   {
     // **** sanity check ****
 
     if ((sortedCards == null) || (sortedCards.size() == 0))
     {
-      return ScoreRankingUnknown;
+      return ScoreTypeUnknown;
     }
 
     PlayingCard cards[] = (PlayingCard[])sortedCards.toArray();
@@ -314,7 +312,7 @@ public abstract class PokerScorer {
     {
       // **** no additional cards because we only score 5 and royal flush is always ace high ****
 
-      return getRankingValue(ScoreRankingRoyalFlush, 0, 0);
+      return getScore(ScoreTypeRoyalFlush, 0, 0);
     }
 
     // **** straight flush ****
@@ -323,28 +321,28 @@ public abstract class PokerScorer {
     {
       // **** no second card because we only score 5 and stright flush is 5 cards ****
 
-      return getRankingValue(ScoreRankingStraightFlush, straightHighRank, 0);
+      return getScore(ScoreTypeStraightFlush, straightHighRank, 0);
     }
 
     // **** check for four of a kind ****
 
     if (rank4Kind != 0)
     {
-      return getRankingValue(ScoreRankingFourOfAKind, rank4Kind, highestSoloRank);
+      return getScore(ScoreTypeFourOfAKind, rank4Kind, highestSoloRank);
     }
 
     // **** check for full house ****
 
     if ((rank3Kind != 0) && (rank2Kind != 0))
     {
-      return getRankingValue(ScoreRankingFullHouse, rank3Kind, rank2Kind);
+      return getScore(ScoreTypeFullHouse, rank3Kind, rank2Kind);
     }
 
     // **** flush ****
     
     if (hasFlush)
     {
-      return getRankingValue(ScoreRankingFlush, highestSoloRank, secondSoloRank);
+      return getScore(ScoreTypeFlush, highestSoloRank, secondSoloRank);
     }
 
     // **** straight ****
@@ -353,40 +351,40 @@ public abstract class PokerScorer {
     {
       // **** no second card because we only score 5 and stright is 5 cards ****
 
-      return getRankingValue(ScoreRankingStraight, straightHighRank, 0);
+      return getScore(ScoreTypeStraight, straightHighRank, 0);
     }
 
     // **** check for three of a kind ****
 
     if (rank3Kind != 0)
     {
-      return getRankingValue(ScoreRankingThreeOfAKind, rank3Kind, highestSoloRank);
+      return getScore(ScoreTypeThreeOfAKind, rank3Kind, highestSoloRank);
     }
 
     // **** check for two pair ****
 
     if ((rank2Kind != 0) && (rank2KindAgain != 0))
     {
-      return getRankingValue(ScoreRankingTwoPairs, rank2Kind, rank2KindAgain);
+      return getScore(ScoreTypeTwoPairs, rank2Kind, rank2KindAgain);
     }
 
     // **** check for one pair ****
 
     if (rank2Kind != 0)
     {
-      return getRankingValue(ScoreRankingOnePair, rank2Kind, highestSoloRank);
+      return getScore(ScoreTypeOnePair, rank2Kind, highestSoloRank);
     }
 
     // **** at least one card is high card ****
 
     if (numberOfCards > 0)
     {
-      return getRankingValue(ScoreRankingHighCard, highestSoloRank, secondSoloRank);
+      return getScore(ScoreTypeHighCard, highestSoloRank, secondSoloRank);
     }
 
     // **** return this hand's ranking ****
 
-    return ScoreRankingUnknown;
+    return ScoreTypeUnknown;
   }
 
   /**
@@ -396,9 +394,19 @@ public abstract class PokerScorer {
    * @param cardRank2
    * @return
    */
-  private static final int getRankingValue(int ranking, int cardRank1, int cardRank2)
+  private static final int getScore(int ranking, int cardRank1, int cardRank2)
   {
     return (ranking << 8) + (cardRank1 << 4) + cardRank2; 
+  }
+
+  /**
+   * Gets a hand type from a score
+   * @param score Score to get hand type from
+   * @return Hand type
+   */
+  public static final int getHandTypeFromScore(int score)
+  {
+    return ((score & 0xF00) >> 8);
   }
 
   //#endregion Internal Functions . . .

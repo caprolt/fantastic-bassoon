@@ -52,9 +52,24 @@ public class PlayerHand {
   /** Cards in this hand */
   private PlayingCard _cardsInHand[];
 
+  private int _currentScoreTotal;
+  private int _currentScoreFaceUp;
+  
   //#endregion Object Variables . . .
 
   //#region Accessors and Mutators . . .
+
+  /**
+   * Gets the current best score from ALL cards in the hand
+   * @return Score value
+   */
+  public int getScoreTotal() { return _currentScoreTotal; }
+
+  /**
+   * Gets the current best score from FACE UP cards in the hand
+   * @return Score value
+   */
+  public int getScoreFaceUp() { return _currentScoreFaceUp; }
 
   /**
    * Gets a list of the face-up cards in this player's hand
@@ -158,6 +173,15 @@ public class PlayerHand {
 
     _cardsInHand[_numberOfCardsInHand++] = card;
 
+    // **** update current scores ****
+
+    _currentScoreTotal = PokerScorer.getScoreForSortedCards(this.getSortedCards(false));
+
+    if (card.getCardState() == PlayingCard.CardStateFaceUp)
+    {
+      _currentScoreFaceUp = PokerScorer.getScoreForSortedCards(this.getSortedCards(true));
+    }
+
     // **** return our new number of cards ****
 
     return _numberOfCardsInHand;
@@ -222,6 +246,8 @@ public class PlayerHand {
     // **** there are no cards in this hand ****
 
     _numberOfCardsInHand = 0;
+    _currentScoreTotal = 0;
+    _currentScoreFaceUp = 0;
   }
   //#endregion Constructors . . .
 

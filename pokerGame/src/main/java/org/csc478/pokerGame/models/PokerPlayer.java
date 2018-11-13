@@ -11,6 +11,7 @@
 
 package org.csc478.pokerGame.models;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class PokerPlayer {
@@ -19,6 +20,15 @@ public class PokerPlayer {
 
   /** The initial amount of money (in dollars) a player starts with */
   private static final int _initialPlayerDollars = 5000;
+
+  /** The confidence threshold required to raise (-1.0 - 1.0) */
+  private static final double _confidenceToRaise = 0.4;
+
+  /** The confidence threshold required to fold */
+  private static final double _confidenceToFold = -0.5;
+
+  // /** The confidence threshold required to call */
+  // private static final double _confidenceToCall = 0.00;
 
   //#endregion Private Constants . . .
 
@@ -47,6 +57,24 @@ public class PokerPlayer {
 
   /** Current amount of debt (in dollars) this player has accrued */
   private int _debt;
+
+  /** Total amount this player has bet this round */
+  private int _currentRoundBetTotal;
+
+  /** Total amount this player has bet this hand */
+  private int _currentHandBetTotal;
+
+  /** This player's index in its current game */
+  private int _currentGamePlayerIndex;
+
+  /** A random number generator for this player */
+  private Random _rand;
+
+  /** Action tolerance based on skill level */
+  private double _actionTolerance;
+
+  /** Chance to bluff, based on skill level */
+  private double _bluffChance;
 
   //#endregion Object Variables . . .
 
@@ -132,6 +160,12 @@ public class PokerPlayer {
    */
   public void setDebt(final int value) { _debt = value; }
 
+  /**
+   * Set the currrent game's player index for this player (for convenience)
+   * @param value The player index for this player in its current game
+   */
+  public void setGamePlayerIndex(final int value) { _currentGamePlayerIndex = value;}
+
   //#endregion Accessors and Mutators . . .
 
   //#region Constructors . . .
@@ -159,6 +193,18 @@ public class PokerPlayer {
     _losses = 0;
     _dollars = _initialPlayerDollars;
     _debt = 0;
+
+      // **** initialize our random number generator ****
+
+      _rand = new Random();
+
+      // **** configure tolerances based on skill level ****
+
+      if (skillLevel != 0)
+      {
+        _actionTolerance = 0.01 * skillLevel;
+        _bluffChance = 0.1 * (10 - skillLevel);
+      }
   }
 
   /**
@@ -183,5 +229,105 @@ public class PokerPlayer {
   }
 
   //#endregion Constructors . . .
+
+
+  //#region Public Interface . . .
+
+  public void RequestActionForGame(
+    final PlayerHand hand, 
+    PokerGame game
+    )
+  {
+    // **** get information we need from the game ****
+
+    int roundNumber = game.getRoundNumber();
+
+    // **** get the minimum bet to stay in ****
+
+    int betMinimum = game.getCurrentMinumumBetForPlayerIndex(_currentGamePlayerIndex);
+
+    // **** check to see if we can even stay in ****
+
+    if (betMinimum > _dollars)
+    {
+      // **** have to fold/muck ****
+
+      if (roundNumber < 6)
+      {
+        game.PlayerActionFold(_currentGamePlayerIndex, roundNumber);
+      }
+      else
+      {
+        game.PlayerActionMuck(_currentGamePlayerIndex, roundNumber);
+      }
+
+      // ****  nothing else to do ****
+
+      return;
+    }
+
+    // **** grab our current scores ****
+
+    int scoreTotal = hand.getScoreTotal();
+    
+    // **** grab our array of face up scores ****
+
+    int faceUpScores[] = game.getOtherPlayerFaceUpScores(_currentGamePlayerIndex);
+
+    // **** start with 50% confidence - stay in game but don't raise ****
+
+    double confidence = 0.0;
+
+    // **** loop over face up scores building our confidence level ****
+
+    for (int scoreIndex = 0; scoreIndex < faceUpScores.length; scoreIndex++)
+    {
+      // **** act depending on which is higher - ties go to lower confidence since this includes ALL of my cards ****
+
+      if (scoreTotal > faceUpScores[scoreIndex])
+      {
+        confidence += _rand.nextDouble();
+      }
+      else
+      {
+        confidence -= _rand.nextDouble();
+      }
+    }
+
+    // TODO(gino): continue here...
+
+    // **** adjust confidence based on number of players ****
+
+    confidence = confidence / (double)game.getNumberOfPlayers();
+
+    // **** start by checking for raising ****
+
+    if ((confidence - _actionTolerance) > _confidenceToRaise)
+    {
+      // **** determine raise amount ****
+
+      int amount = 0;
+
+
+      
+    }
+
+    
+    // **** first, check if we need to bet more in order to stay in the game ****
+
+    // if (betMinimum > 0)
+    // {
+    //   // **** see if we are confident enough to stay in ****
+    //   if ((confidence - _actionTolerance) > _confidenceToCall)
+    //   {
+    //     // **** check for raise
+    //   }
+    // }
+
+
+
+  }
+
+  //#endregion Public Interface . . .
 
 }

@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\GameAction.java
  *  created: 2018-11-09 13:15:02
  *       by: Gino Canessa
- * modified: 2018-11-12
+ * modified: 2018-11-13
  *       by: Gino Canessa
  *
  *  summary: A Poker Game Action
@@ -17,7 +17,7 @@ import java.util.UUID;
 public class GameAction {
   //#region Public Constants . . .
 
-  public static final char GameActionTypePayAnte = 'P';
+  public static final char GameActionTypeShuffleDeck = 'S';
   public static final char GameActionTypeCall = 'C';
   public static final char GameActionTypeRaise = 'R';
   public static final char GameActionTypeFold = 'F';
@@ -28,7 +28,8 @@ public class GameAction {
   public static final char GameActionTypeDealFaceDown = 'D';
   public static final char GameActionTypeGetFirstPlayerForRound = 'G';
   public static final char GameActionTypeWaitOnPlayerAction = 'W';
-  public static final char GameActionScoring = 'S';
+  public static final char GameActionTypeEndGame = 'E';
+  public static final char GameActionTypeRequestPlayerAction = 'P';
   
   //#endregion Public Constants . . .
 
@@ -39,6 +40,9 @@ public class GameAction {
 
   /** Unique identifier for the player performing this action */
   private final UUID _playerId;
+
+  /** Index of this player in its current game */
+  private final int _gamePlayerIndex;
 
   /** Unique identifier for the game this action applies to */
   private final UUID _pokerGameId;
@@ -55,6 +59,9 @@ public class GameAction {
   /** Date and time this action was performed */
   private final Date _actionPerformedDateTime;
 
+  /** Amount value for this action, if applicable */
+  private final int _amount;
+
   //#endregion Object Variables . . .
 
   //#region Accessors and Mutators . . .
@@ -70,6 +77,12 @@ public class GameAction {
    * @return UUID representing the player that performed this action
    */
   public UUID getPlayerId() { return _playerId; }
+
+  /**
+   * Gets the player index for the player which performed this action in its current game
+   * @return Index of the player for this action in its current game
+   */
+  public int getGamePlayerIndex() { return _gamePlayerIndex; }
   
   /**
    * Gets the id of the game which this action was performed in
@@ -101,6 +114,12 @@ public class GameAction {
    */
   public Date getActionPerformedDateTime() { return _actionPerformedDateTime; }
 
+  /**
+   * Gets the amount relevant to this action (if applicable)
+   * @return The amount relevant to this action (if applicable)
+   */
+  public int getAmount() { return _amount; }
+
   //#endregion Accessors and Mutators . . .
 
   //#region Class Variables . . .
@@ -111,8 +130,10 @@ public class GameAction {
 
   public GameAction(
     final UUID playerId,
+    final int gamePlayerIndex,
     final UUID pokerGameId,
     final char actionType,
+    final int amount,
     final int roundNumber,
     final int gameActionNumber
     )
@@ -120,8 +141,10 @@ public class GameAction {
     _gameActionId = UUID.randomUUID();
 
     _playerId = playerId;
+    _gamePlayerIndex = gamePlayerIndex;
     _pokerGameId = pokerGameId;
     _actionType = actionType;
+    _amount = amount;
     _roundNumber = roundNumber;
     _gameActionNumber = gameActionNumber;
     _actionPerformedDateTime = new Date();
