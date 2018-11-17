@@ -54,6 +54,8 @@ public class PlayerHand {
 
   private int _currentScoreTotal;
   private int _currentScoreFaceUp;
+  private int _currentHandTotal;
+  private int _currentHandFaceUp;
   
   //#endregion Object Variables . . .
 
@@ -70,6 +72,18 @@ public class PlayerHand {
    * @return Score value
    */
   public int getScoreFaceUp() { return _currentScoreFaceUp; }
+
+  /**
+   * Gets the current best hand from ALL cards in the hand
+   * @return Hand Type
+   */
+  public int getHandTypeTotal() { return _currentHandTotal; }
+
+  /**
+   * Gets the current best FACE UP hand showing in this hand
+   * @return Hand Type
+   */
+  public int getHandTypeFaceUp() { return _currentHandFaceUp; }
 
   /**
    * Gets a list of the face-up cards in this player's hand
@@ -177,9 +191,21 @@ public class PlayerHand {
 
     _currentScoreTotal = PokerScorer.getScoreForSortedCards(this.getSortedCards(false));
 
+    // **** update hand type ****
+    
+    _currentHandFaceUp = PokerScorer.getHandTypeFromScore(_currentScoreTotal);
+
+    // **** update face up info if this was a face-up card ****
+
     if (card.getCardState() == PlayingCard.CardStateFaceUp)
     {
+      // **** update score ****
+
       _currentScoreFaceUp = PokerScorer.getScoreForSortedCards(this.getSortedCards(true));
+
+      // **** update showing hand type ****
+
+      _currentHandFaceUp = PokerScorer.getHandTypeFromScore(_currentScoreFaceUp);
     }
 
     // **** return our new number of cards ****

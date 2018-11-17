@@ -17,20 +17,42 @@ import java.util.UUID;
 public class GameAction {
   //#region Public Constants . . .
 
-  public static final char GameActionTypeShuffleDeck = 'S';
-  public static final char GameActionTypeCall = 'C';
-  public static final char GameActionTypeRaise = 'R';
-  public static final char GameActionTypeFold = 'F';
-  public static final char GameActionTypeMuck = 'M';
-  public static final char GameActionTypeRequestAnte = 'A';
-  public static final char GameActionTypeBurnCard = 'B';
-  public static final char GameActionTypeDealFaceUp = 'U';
-  public static final char GameActionTypeDealFaceDown = 'D';
-  public static final char GameActionTypeGetFirstPlayerForRound = 'G';
-  public static final char GameActionTypeWaitOnPlayerAction = 'W';
-  public static final char GameActionTypeEndGame = 'E';
-  public static final char GameActionTypeRequestPlayerAction = 'P';
+  public static final int GameActionTypeInvalid             = 0;
+  public static final int GameActionTypeShuffleDeck         = 1;
+  public static final int GameActionTypeCall                = 2;
+  public static final int GameActionTypeRaise               = 3;
+  public static final int GameActionTypeFold                = 4;
+  public static final int GameActionTypeMuck                = 5;
+  public static final int GameActionTypeRequestAnte         = 6;
+  public static final int GameActionTypeBurnCard            = 7;
+  public static final int GameActionTypeDealFaceUp          = 8;
+  public static final int GameActionTypeDealFaceDown        = 9;
+  public static final int GameActionTypeWaitOnPlayerAction  = 10;
+  public static final int GameActionTypeEndGame             = 11;
+  public static final int GameActionTypeRequestPlayerAction = 12;
+  public static final int GameActionTypeShowCards           = 13;
   
+  /**
+   * Enum type for game actions, must be in same order as constants 
+   * so that ordinals match values
+   */
+  public enum GameActionTypes {
+    Invalid,
+    ShuffleDeck,
+    Call,
+    Raise,
+    Fold,
+    Muck,
+    RequestAnte,
+    BurnCard,
+    DealFaceUp,
+    DealFaceDown,
+    WaitOnPlayerAction,
+    EndGame,
+    RequestPlayerAction,
+    ShowCards
+  }
+
   //#endregion Public Constants . . .
 
   //#region Object Variables . . .
@@ -48,7 +70,7 @@ public class GameAction {
   private final UUID _pokerGameId;
 
   /** Type of this action */
-  private final char _actionType;
+  private final int _actionType;
 
   /** Round number within the game this action is from */
   private final int _roundNumber;
@@ -94,7 +116,7 @@ public class GameAction {
    * Gets the action type for this action
    * @return Action type of this action
    */
-  public char getActionType() { return _actionType; }
+  public int getActionType() { return _actionType; }
 
   /**
    * Gets the round number this action was performed in
@@ -132,7 +154,7 @@ public class GameAction {
     final UUID playerId,
     final int gamePlayerIndex,
     final UUID pokerGameId,
-    final char actionType,
+    final int actionType,
     final int amount,
     final int roundNumber,
     final int gameActionNumber

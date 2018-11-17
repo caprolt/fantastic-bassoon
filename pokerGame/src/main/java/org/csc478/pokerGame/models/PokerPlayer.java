@@ -24,6 +24,9 @@ public class PokerPlayer {
   /** The confidence threshold required to raise (-1.0 - 1.0) */
   private static final double _confidenceToRaise = 0.4;
 
+  /** The confidence threshold for raising with high stake instead of low */
+  private static final double _confidenceForHighStake = 0.75;
+
   /** The confidence threshold required to fold */
   private static final double _confidenceToFold = -0.5;
 
@@ -57,12 +60,6 @@ public class PokerPlayer {
 
   /** Current amount of debt (in dollars) this player has accrued */
   private int _debt;
-
-  /** Total amount this player has bet this round */
-  private int _currentRoundBetTotal;
-
-  /** Total amount this player has bet this hand */
-  private int _currentHandBetTotal;
 
   /** This player's index in its current game */
   private int _currentGamePlayerIndex;
@@ -194,17 +191,17 @@ public class PokerPlayer {
     _dollars = _initialPlayerDollars;
     _debt = 0;
 
-      // **** initialize our random number generator ****
+    // **** initialize our random number generator ****
 
-      _rand = new Random();
+    _rand = new Random();
 
-      // **** configure tolerances based on skill level ****
+    // **** configure tolerances based on skill level ****
 
-      if (skillLevel != 0)
-      {
-        _actionTolerance = 0.01 * skillLevel;
-        _bluffChance = 0.1 * (10 - skillLevel);
-      }
+    if (skillLevel != 0)
+    {
+      _actionTolerance = 0.01 * skillLevel;
+      _bluffChance = 0.01 * skillLevel;
+    }
   }
 
   /**
@@ -233,6 +230,16 @@ public class PokerPlayer {
 
   //#region Public Interface . . .
 
+  public void SetWinner(int handType, int potAmount)
+  {
+    //
+  }
+
+  /**
+   * Perform a game action based on current knowable state
+   * @param hand This player's current hand
+   * @param game Game object
+   */
   public void RequestActionForGame(
     final PlayerHand hand, 
     PokerGame game
@@ -254,11 +261,11 @@ public class PokerPlayer {
 
       if (roundNumber < 6)
       {
-        game.PlayerActionFold(_currentGamePlayerIndex, roundNumber);
+        game.PlayerActionFold(_currentGamePlayerIndex);
       }
       else
       {
-        game.PlayerActionMuck(_currentGamePlayerIndex, roundNumber);
+        game.PlayerActionMuck(_currentGamePlayerIndex);
       }
 
       // ****  nothing else to do ****
@@ -274,7 +281,7 @@ public class PokerPlayer {
 
     int faceUpScores[] = game.getOtherPlayerFaceUpScores(_currentGamePlayerIndex);
 
-    // **** start with 50% confidence - stay in game but don't raise ****
+    // **** start with 0 confidence - stay in game but don't raise ****
 
     double confidence = 0.0;
 
@@ -294,11 +301,41 @@ public class PokerPlayer {
       }
     }
 
-    // TODO(gino): continue here...
-
     // **** adjust confidence based on number of players ****
 
     confidence = confidence / (double)game.getNumberOfPlayers();
+
+    // **** check for final round actions ****
+
+    if (roundNumber == 6)
+    {
+      // **** check for muck ****
+
+      if (confidence < _confidenceToFold)
+      {
+        // **** muck ****
+
+        game.PlayerActionMuck(_currentGamePlayerIndex);
+
+        // **** done ****
+
+        return;
+      }
+
+      // **** show ****
+
+      game.PlayerActionShow(_currentGamePlayerIndex);
+    }
+
+
+    // **** check for bluff chance ****
+
+    if (_rand.nextDouble() < _bluffChance)
+    {
+      // **** make high confidence ****
+
+      confidence = _confidenceToRaise + _rand.nextDouble();
+    }
 
     // **** start by checking for raising ****
 
@@ -308,24 +345,72 @@ public class PokerPlayer {
 
       int amount = 0;
 
+      // **** look at confidence for base stake ****
 
-      
+      if (confidence > _confidenceForHighStake)
+      {
+        // **** determine how much we'd like to bet ***
+
+        amount = (int)(game.getHighStake() * (_rand.nextDouble() * 5));
+      }
+      else
+      {
+        // **** determine how much we'd like to bet ***
+
+        amount = (int)(game.getLowStake() * (_rand.nextDouble() * 5));
+      }
+
+      // **** ask the game for the nearest allowed betting amount ****
+
+      amount = game.getClosestValidBet(amount);
+
+      // **** make sure our bet is at least the minimum bet ****
+
+      if (amount <= betMinimum)
+      {
+        // **** just call, we aren't confident to raise more than this ****
+
+        game.PlayerActionCall(_currentGamePlayerIndex, betMinimum);
+      }
+      else
+      {
+        // **** raise ****
+
+        game.PlayerActionRaise(_currentGamePlayerIndex, amount);
+      }
+
+      // **** nothing else to do ****
+
+      return;
     }
 
-    
-    // **** first, check if we need to bet more in order to stay in the game ****
+    // **** check for confidence to stay in ****
 
-    // if (betMinimum > 0)
-    // {
-    //   // **** see if we are confident enough to stay in ****
-    //   if ((confidence - _actionTolerance) > _confidenceToCall)
-    //   {
-    //     // **** check for raise
-    //   }
-    // }
+    if ((confidence - _actionTolerance) > _confidenceToFold)
+    {
+      // **** just call, we aren't confident to raise more than this ****
 
+      game.PlayerActionCall(_currentGamePlayerIndex, betMinimum);
 
+      // **** nothing else to do ****
 
+      return;
+    }
+  
+    // **** have to fold/muck ****
+
+    if (roundNumber < 6)
+    {
+      game.PlayerActionFold(_currentGamePlayerIndex);
+    }
+    else
+    {
+      game.PlayerActionMuck(_currentGamePlayerIndex);
+    }
+
+    // ****  nothing else to do ****
+
+    return;
   }
 
   //#endregion Public Interface . . .

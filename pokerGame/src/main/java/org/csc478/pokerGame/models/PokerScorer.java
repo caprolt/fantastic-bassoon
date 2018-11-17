@@ -32,6 +32,7 @@ public abstract class PokerScorer {
   public static final int ScoreTypeStraightFlush = 0x09;
   public static final int ScoreTypeRoyalFlush    = 0x0A;
 
+  public static final int InvalidHighScore = 0x0B << 8;
   //#endregion Public Constants . . .
 
   //#region Private Constants . . .
