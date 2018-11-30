@@ -105,7 +105,7 @@ public class CardDeck {
 
       // **** set our card ****
 
-      _cards[deckCardIndex] = new PlayingCard(nextCardIndex);
+      _cards[deckCardIndex] = new PlayingCard(cardIndices.get(nextCardIndex));
 
       // **** remove our index - this card has been used ****
 
