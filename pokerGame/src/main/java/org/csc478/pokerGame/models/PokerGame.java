@@ -218,6 +218,15 @@ public class PokerGame {
     return faceUpScores;
   }
 
+  /**
+   * Get the current hand for a player
+   * @param playerIndex Index of the player within the game
+   * @return PlayerHand object with the specified player's current hand
+   */
+  public PlayerHand getPlayerHand(int playerIndex) {
+    return _playerHands[playerIndex];
+  }
+
   public int getClosestValidBet(int requestedBet) {
 
     int validAmount = 0;
