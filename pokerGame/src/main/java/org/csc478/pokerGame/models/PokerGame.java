@@ -11,6 +11,8 @@
 
 package org.csc478.pokerGame.models;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -111,7 +113,12 @@ public class PokerGame {
   /** Queue for holding requested actions */
   private Queue<GameAction> _requestedActions;
 
+  /** Thread object that runs our game */
   private Thread _gameProcessThread;
+
+  /** Object for notifiying the UI on property changes */
+  private PropertyChangeSupport _propertyChangeSupport;
+
 
   //#endregion Object Variables . . .
 
@@ -326,7 +333,7 @@ public class PokerGame {
       throw new InvalidParameterException(String.format("Invalid table highStake: %d", highStake));
     }
 
-    if (lowStake <= highStake)
+    if (lowStake >= highStake)
     {
       throw new InvalidParameterException(
         String.format("Invalid table stakes, low: %d must be smaller than high: %d", lowStake, highStake));
@@ -365,10 +372,29 @@ public class PokerGame {
 
     _gameProcessThread = null;
 
+    _propertyChangeSupport = new PropertyChangeSupport(this);
   }
+
   //#endregion Constructors . . .
 
   //#region Public Interface . . .
+
+
+  /**
+   * Add a game event listener for this game
+   * @param pcl The property change listener which will listen for game events
+   */
+  public void AddGameEventListener(PropertyChangeListener pcl) {
+    _propertyChangeSupport.addPropertyChangeListener(pcl);
+}
+
+  /**
+   * Remove a game event listener for this game
+   * @param pcl The property change listener which will NO LONGER listen for game events
+   */
+  public void RemoveGameEventListener(PropertyChangeListener pcl) {
+    _propertyChangeSupport.removePropertyChangeListener(pcl);
+  }
 
   /**
    * Add a player to the game
@@ -441,7 +467,7 @@ public class PokerGame {
 
     // **** make sure a game thread is running ****
 
-    if (_gameProcessThread != null)
+    if (_gameProcessThread == null)
     {
       Runnable procRunnable = () -> {GameThreadProc();};
       _gameProcessThread = new Thread(procRunnable);
@@ -1052,15 +1078,21 @@ public class PokerGame {
    */
   private void RequestAction(GameAction action)
   {
+    // **** add this action to our internal list ****
+
     _requestedActions.add(action);
+
+    // **** notify any listeners that an action was taken ****
+
+    _propertyChangeSupport.firePropertyChange("GameAction", null, action);
   }
 
-    /** Request that the game ends */
-    private void RequestEndGame()
-    {
-      RequestAction(new GameAction(null, -1, _pokerGameId, GameAction.GameActionTypeEndGame, 0, _currentRound, _gameActionCount++));
-    }
-  
+  /** Request that the game ends */
+  private void RequestEndGame()
+  {
+    RequestAction(new GameAction(null, -1, _pokerGameId, GameAction.GameActionTypeEndGame, 0, _currentRound, _gameActionCount++));
+  }
+
   /** Request that a player takes action */
   private void RequestPlayerAction()
   {
