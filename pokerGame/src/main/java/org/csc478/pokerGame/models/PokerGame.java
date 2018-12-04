@@ -119,9 +119,15 @@ public class PokerGame {
 
   /**
    * Gets the Ante (in dollars) for this game
-   * @return The ante (in dollars) for thi game
+   * @return The ante (in dollars) for this game
    */
   public int getAnte() { return _ante; }
+
+  /**
+   * Gets the current pot (in dollars) for this game.
+   * @return The amount in the pot (in dollars) at the time of calling.
+   */
+  public int getCurrentPot() { return _potValue; }
 
   /**
    * Gets the Low Stake Limit (in dollars) for this game

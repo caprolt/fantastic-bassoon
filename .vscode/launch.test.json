@@ -1,0 +1,30 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "pokerGame",
+                "projectName": "pokerGame",
+                "workingDirectory": "c:\\Users\\gino.canessa\\Documents\\UIS\\2018_Fall\\CSC478\\fantastic-bassoon\\pokerGame",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "pokerGame",
+                "projectName": "pokerGame",
+                "workingDirectory": "c:\\Users\\gino.canessa\\Documents\\UIS\\2018_Fall\\CSC478\\fantastic-bassoon\\pokerGame",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}
