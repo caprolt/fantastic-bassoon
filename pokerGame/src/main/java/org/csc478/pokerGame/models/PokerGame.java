@@ -227,6 +227,11 @@ public class PokerGame {
     return _playerHands[playerIndex];
   }
 
+  /**
+   * Get the closest valid bet to a requested bet value
+   * @param requestedBet Amount the caller would like to be
+   * @return Nearest valid bet to the requested bet
+   */
   public int getClosestValidBet(int requestedBet) {
 
     int validAmount = 0;
