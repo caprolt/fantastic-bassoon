@@ -124,6 +124,50 @@ public class PlayingCard {
    */
   public int getCardSuit() { return SuitFromValue(_suitRank); }
 
+
+  /**
+   * Get a string value name for a specified suit
+   * @param cardSuit Suit we want the name for
+   * @return Name of the suit (e.g., "Clubs")
+   */
+  public static String getSuitName(int cardSuit) {
+    switch (cardSuit)
+    {
+      case CardSuitClubs:    return "Clubs";
+      case CardSuitDiamonds: return "Diamonds";
+      case CardSuitHearts:   return "Hearts";
+      case CardSuitSpades:   return "Spades";
+    }
+
+    return "Unknown Suit";
+  }
+
+  /**
+   * Get a string value name for a specified rank
+   * @param cardRank Rank we want the name for
+   * @return Name of the rank (e.g., "Two", "Ace")
+   */
+  public static String getRankName(int cardRank) {
+    switch (cardRank)
+    {
+      case CardRankTwo:   return "Two";
+      case CardRankThree: return "Three";
+      case CardRankFour:  return "Four";
+      case CardRankFive:  return "Five";
+      case CardRankSix:   return "Six";
+      case CardRankSeven: return "Seven";
+      case CardRankEight: return "Eight";
+      case CardRankNine:  return "Nine";
+      case CardRankTen:   return "Ten";
+      case CardRankJack:  return "Jack";
+      case CardRankQueen: return "Queen";
+      case CardRankKing:  return "King";
+      case CardRankAce:   return "Ace";
+    }
+
+    return "Unknown Rank";
+  }
+
   //#endregion Accessors and Mutators . . .
 
   //#region Constructors . . .

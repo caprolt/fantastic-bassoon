@@ -173,6 +173,24 @@ public class PokerGame {
   public int getCurrentMinumumTotalBet() { return _currentBetToStayIn; }
 
   /**
+   * Get the suit for the card at the specified index
+   * @param deckIndex Index of the card within the deck (0-51)
+   * @return The Suit of the card (e.g., PlayingCard.CardSuitClubs)
+   */
+  public int getSuitForCard(int deckIndex) {
+    return _gameDeck.CardAt(deckIndex).getCardSuit();
+  }
+
+  /**
+   * Get the rank for the card at the specified index
+   * @param deckIndex Index of the card within the deck (0-51)
+   * @return The Rank of the card (e.g., PlayingCard.CardRankAce)
+   */
+  public int getRankForCard(int deckIndex) {
+    return _gameDeck.CardAt(deckIndex).getCardRank();
+  }
+
+  /**
    * Gets the current minimum bet required by a given player to stay in the game
    * @param playerIndex Game Player index for the player
    * @return Minumum bet required, in dollars
@@ -225,6 +243,14 @@ public class PokerGame {
    */
   public PlayerHand getPlayerHand(int playerIndex) {
     return _playerHands[playerIndex];
+  }
+
+  /**
+   * Get the current active player flags
+   * @return Array of booleans, True if the player is active, False otherwise
+   */
+  public boolean[] getActivePlayers() {
+    return _playerActiveFlags;
   }
 
   /**

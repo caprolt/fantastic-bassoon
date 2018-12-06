@@ -150,7 +150,7 @@ public abstract class PokerScorer {
       return ScoreTypeUnknown;
     }
 
-    PlayingCard cards[] = (PlayingCard[])sortedCards.toArray();
+    PlayingCard cards[] = sortedCards.toArray(new PlayingCard[0]);
     int numberOfCards = sortedCards.size();
 
     int highestSoloRank = 0;
