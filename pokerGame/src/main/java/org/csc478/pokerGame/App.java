@@ -9,19 +9,34 @@
 
 package org.csc478.pokerGame;
 
+import javax.swing.JFrame;
+
 
 /**
  * Hello world!
  */
-public final class App {
-    private App() {
-    }
+public class App implements Runnable {
+	GUI pokerGUI = new GUI();
 
     /**
      * Says hello to the world.
      * @param args The arguments of the program.
      */
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+    		new Thread(new App() ).start();
+    	
+    	
     }
+
+	@Override
+	public void run() {
+		//uncomment while loop to continuously paint to get updated board (may put in method to only update on variable changing to preserve resources
+		//while(true) {
+			pokerGUI.refresher();
+			pokerGUI.repaint();
+			
+		//}
+		// TODO Auto-generated method stub
+		
+	}
 }
