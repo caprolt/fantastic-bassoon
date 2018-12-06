@@ -89,6 +89,32 @@ public class GameAction {
   //#region Accessors and Mutators . . .
 
   /**
+   * Get the action name for the specified action type
+   * @param actionType Action type to name
+   * @return Name of the specified action (e.g., "Shuffle Deck")
+   */
+  public static String getActionName(GameActionTypes actionType) {
+    switch (actionType)
+    {
+      case Invalid: return "Invalid";
+      case ShuffleDeck: return "Shuffle Deck";
+      case Call: return "Call";
+      case Raise: return "Raise";
+      case Fold: return "Fold";
+      case Muck: return "Muck";
+      case RequestAnte: return "Request Ante";
+      case BurnCard: return "Burn Card";
+      case DealFaceUp: return "Deal Face Up";
+      case DealFaceDown: return "Deal Face Down";
+      case WaitOnPlayerAction: return "Wait on Player Action";
+      case EndGame: return "End Game";
+      case RequestPlayerAction: return "Request Player Action";
+      case ShowCards: return "Show Cards";
+    }
+    return "Unknown Action";
+  }
+
+  /**
    * Gets the game action id for this action
    * @return UUID representing this game action
    */
