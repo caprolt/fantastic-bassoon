@@ -1261,9 +1261,28 @@ public class GUI extends JFrame {
 
 	@Override
 		public void actionPerformed(ActionEvent e) {
-				raiseButtonHit = false;
-			// TODO Auto-generated method stub
-			System.out.println("You just clicked the Raise Button");		
+		raiseButtonHit = false;
+	// TODO Auto-generated method stub
+	JFrame frame = new JFrame();
+	int result = 0;
+	String title = "How much to raise? To Cancel Type 0";
+	int initialType = JOptionPane.QUESTION_MESSAGE;
+	do {
+		try {
+		
+		String name = JOptionPane.showInputDialog(frame, title, initialType);
+		result = Integer.parseInt(name);
+	    System.out.println("User chose to raise: " + result);
+		}
+	catch(NumberFormatException e1)
+	{
+		initialType = JOptionPane.ERROR_MESSAGE;
+	    title = "Error: Please enter a valid amount!";
+	}
+		}while(result >= 500);
+
+	System.out.println("You just clicked the Raise Button");
+	//showRaisePanel();	
 		}
 	}
 
