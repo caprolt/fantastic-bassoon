@@ -48,7 +48,7 @@ public class GUI extends JFrame {
 	boolean foldButtonHit = false;
 	boolean muckCardsButtonHit = false;
 	boolean showCardsButtonHit = false;
-
+	boolean playersActive[]= new boolean[6];
 	
 	PokerGame game = new PokerGame(pokerGameAnte, pokerGameLowStake, pokerGameHighStake);
 	//background color
@@ -446,7 +446,9 @@ public class GUI extends JFrame {
 			System.out.println("hi" + hS + lS+ ante);
 			//current minimum total bet for player to stay in the game
 			String minimumStayIn=Integer.toString(game.getCurrentMinumumTotalBet());
-			boolean[] playersActive = game.getActivePlayers();
+			
+			//boolean[] playersActive = game.getActivePlayers();
+			
 			System.out.println(game.getNumberOfPlayers());
 
 			//if (playersActive[y] == true) 
@@ -466,19 +468,18 @@ public class GUI extends JFrame {
 			int pokerRound = game.getRoundNumber();
 			System.out.println(pokerRound);
 			//can the games start?
-			if(game.CanGameStart()) 
+			if((game.CanGameStart() && newGameButtonHit==true)) 
 			{		
 				//error checking; printing out variables to the console
 				System.out.println(hS);
 				System.out.println(lS);			
 				System.out.println(ante);
 				game.StartGame();
-				startDealing(mb, playersActive);
+				startDealing(mb, game.getNumberOfPlayers(), playersActive);
 				
 			
 			}
-			else {System.out.println("NO");}
-			
+			else {System.out.println("NO");}	
 			
 
 			//showCards(mb,playersActive, 0);
@@ -492,7 +493,7 @@ public class GUI extends JFrame {
 		 * @param mb
 		 * @param playersActive
 		 */
-		private void startDealing(Graphics mb, boolean[] playersActive) 
+		private void startDealing(Graphics mb, int playerNumber, boolean[] playersActive) 
 		{
 			//cardImageIndex this variable is the card index for drawing the card in the right player cardSpace. 0-7; left to right; up to down  			
 			int cardImageIndex = 1;
@@ -509,17 +510,19 @@ public class GUI extends JFrame {
 			if( gameRound == 0)
 			{
 				for(int i = 0; i<3;i++) {
-				for(y = 0; y<playersActive.length; y++) 
+				for(y = 0; y<playerNumber; y++) 
 				{
 					//for(cardImageIndex = 0; cardImageIndex<3; cardImageIndex++) {
 					//drawing cards to JFrame; three cards; game round hard set to 0 to get first three cards; need to turn first two over
-					drawCard(mb, index,i, y);index++;
-					//System.out.println("cardindex: " + cardImageIndex);
+					if(playersActive[y]==true) {
+						drawCard(mb, index,i, y);index++;
+						//System.out.println("cardindex: " + cardImageIndex);
 					
 						//game round is not zero so we only print one card to JFrame
-					if(i==0 || i ==1) 
-					{
+						if(i==0 || i ==1) 
+						{
 						coverCards(mb, i, y );
+						}
 					}
 				}
 				
@@ -795,7 +798,7 @@ public class GUI extends JFrame {
 	
 		public void drawCard(Graphics mb, int index, int cardImageIndex, int playerID) 
 		{
-			//card is  position in deck
+			//index is  position in deck
 			//cardimage is index of player hand for card painting
 			//draw cards complete; have to draw cards to the correct player
 			//drawing shapes using fill rect and fill oval to paint card space and card suit shape
@@ -1316,8 +1319,9 @@ public class GUI extends JFrame {
 	@Override
 		public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+			
 			System.out.println("You just clicked the End Game Button");
-		
+		System.exit(0);
 		}
 	}
 	
@@ -1335,7 +1339,8 @@ public class GUI extends JFrame {
 
 	@Override
 		public void actionPerformed(ActionEvent e) {
-			newGameButtonHit = false;
+			newGameButtonHit = true;
+			repaint();
 			// TODO Auto-generated method stub
 			System.out.println("You just clicked the New Game Button");		
 		}
@@ -1357,6 +1362,7 @@ public class GUI extends JFrame {
 	@Override
 		public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		playersActive[0]=true;
 		player1Active = true;
 		addPlayer1.setVisible(false);
 		PokerPlayer player1 = new PokerPlayer("player1", false,5);
@@ -1375,7 +1381,7 @@ public class GUI extends JFrame {
 	@Override
 		public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		playersActive[1]=true;
 		player2Active = true;
 		addPlayer2.setVisible(false);
 		PokerPlayer player2 = new PokerPlayer("player2", false,5);
@@ -1396,6 +1402,7 @@ public class GUI extends JFrame {
 	@Override
 		public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		playersActive[2]=true;
 		player3Active = true;
 		addPlayer3.setVisible(false);
 		PokerPlayer player3 = new PokerPlayer("player3", false,5);
@@ -1414,6 +1421,7 @@ public class GUI extends JFrame {
 	@Override
 		public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
+		playersActive[3]=true;
 		player4Active = true;
 		addPlayer4.setVisible(false);
 		PokerPlayer player4 = new PokerPlayer("player4", false,5);
@@ -1431,6 +1439,7 @@ public class GUI extends JFrame {
 
 	@Override
 		public void actionPerformed(ActionEvent e) {
+		playersActive[4]=true;
 		player5Active = true;
 		addPlayer5.setVisible(false);
 		PokerPlayer player5 = new PokerPlayer("player5", false,5);
@@ -1448,6 +1457,7 @@ public class GUI extends JFrame {
 
 	@Override
 		public void actionPerformed(ActionEvent e) {
+		playersActive[5]=true;
 		player6Active = true;
 		addPlayer6.setVisible(false);
 		PokerPlayer player6 = new PokerPlayer("player6", false,5);
