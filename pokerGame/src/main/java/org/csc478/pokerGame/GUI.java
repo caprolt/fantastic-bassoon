@@ -1384,12 +1384,40 @@ public class GUI extends JFrame {
 		playersActive[0]=true;
 		player1Active = true;
 		addPlayer1.setVisible(false);
-		PokerPlayer player1 = new PokerPlayer("player1", false,5);
-		try {
-			game.AddPlayer(player1);
-		} catch (InvalidActivityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		String[] playerType = {"Human", "Computer"};
+		int x = JOptionPane.showOptionDialog(null, "Is this player a human player or a computer player?",
+		    "Add A Player", JOptionPane.DEFAULT_OPTION,
+		    JOptionPane.QUESTION_MESSAGE, null, playerType, playerType[1]);
+		if(x==0) {
+			
+			
+			// TODO Auto-generated method stub
+			String title = "Please enter the name of the player";
+			int initialType = JOptionPane.QUESTION_MESSAGE;				
+				String name = JOptionPane.showInputDialog(null, title, initialType);
+			    System.out.println("Players Name is:  " + name);
+			
+			PokerPlayer player1 = new PokerPlayer(name, false,5);
+			try {
+				game.AddPlayer(player1);			
+				System.out.println("You have added a human player");
+				} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		}
+		else if (x==1) {
+			
+			PokerPlayer player1 = new PokerPlayer("player1", true,5);
+			try {
+				game.AddPlayer(player1);			
+				System.out.println("You have added a computer player");
+			} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		}
 		
 		System.out.println("You just Added Player 1");
@@ -1403,19 +1431,45 @@ public class GUI extends JFrame {
 		playersActive[1]=true;
 		player2Active = true;
 		addPlayer2.setVisible(false);
-		PokerPlayer player2 = new PokerPlayer("player2", false,5);
-		try {
-			game.AddPlayer(player2);
-		} catch (InvalidActivityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		String[] playerType = {"Human", "Computer"};
+		int x = JOptionPane.showOptionDialog(null, "Is this player a human player or a computer player?",
+		    "Add A Player", JOptionPane.DEFAULT_OPTION,
+		    JOptionPane.QUESTION_MESSAGE, null, playerType, playerType[1]);
+		if(x==0) {
+			
+			
+			// TODO Auto-generated method stub
+			String title = "Please enter the name of the player";
+			int initialType = JOptionPane.QUESTION_MESSAGE;				
+				String name = JOptionPane.showInputDialog(null, title, initialType);
+			    System.out.println("Players Name is:  " + name);
+			
+			PokerPlayer player2 = new PokerPlayer(name, false,5);
+			try {
+				game.AddPlayer(player2);			
+				System.out.println("You have added a human player");
+				} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		}
+		else if (x==1) {
+			
+			PokerPlayer player2 = new PokerPlayer("player2", true,5);
+			try {
+				game.AddPlayer(player2);			
+				System.out.println("You have added a computer player");
+			} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		
 		
 		System.out.println("You just added Player 2");		
 		}
 	}
-
+	}
 	public class ActAddPlayer3 implements ActionListener {		
 
 	@Override
@@ -1424,17 +1478,44 @@ public class GUI extends JFrame {
 		playersActive[2]=true;
 		player3Active = true;
 		addPlayer3.setVisible(false);
-		PokerPlayer player3 = new PokerPlayer("player3", false,5);
-		try {
-			game.AddPlayer(player3);
-		} catch (InvalidActivityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		String[] playerType = {"Human", "Computer"};
+		int x = JOptionPane.showOptionDialog(null, "Is this player a human player or a computer player?",
+		    "Add A Player", JOptionPane.DEFAULT_OPTION,
+		    JOptionPane.QUESTION_MESSAGE, null, playerType, playerType[1]);
+		if(x==0) {
+			
+			
+			// TODO Auto-generated method stub
+			String title = "Please enter the name of the player";
+			int initialType = JOptionPane.QUESTION_MESSAGE;				
+				String name = JOptionPane.showInputDialog(null, title, initialType);
+			    System.out.println("Players Name is:  " + name);
+			
+			PokerPlayer player3 = new PokerPlayer(name, false,5);
+			try {
+				game.AddPlayer(player3);			
+				System.out.println("You have added a human player");
+				} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		}
-		
+		else if (x==1) {
+			
+			PokerPlayer player3 = new PokerPlayer("player3", true,5);
+			try {
+				game.AddPlayer(player3);			
+				System.out.println("You have added a computer player");
+			} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}		
 		System.out.println("You just added Player 3");		
 		}
+		
 	}
+}
 	public class ActAddPlayer4 implements ActionListener {		
 
 	@Override
@@ -1443,16 +1524,42 @@ public class GUI extends JFrame {
 		playersActive[3]=true;
 		player4Active = true;
 		addPlayer4.setVisible(false);
-		PokerPlayer player4 = new PokerPlayer("player4", false,5);
-		try {
-			game.AddPlayer(player4);
-		} catch (InvalidActivityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		String[] playerType = {"Human", "Computer"};
+		int x = JOptionPane.showOptionDialog(null, "Is this player a human player or a computer player?",
+		    "Add A Player", JOptionPane.DEFAULT_OPTION,
+		    JOptionPane.QUESTION_MESSAGE, null, playerType, playerType[1]);
+		if(x==0) {
+			
+			
+			// TODO Auto-generated method stub
+			String title = "Please enter the name of the player";
+			int initialType = JOptionPane.QUESTION_MESSAGE;				
+				String name = JOptionPane.showInputDialog(null, title, initialType);
+			    System.out.println("Players Name is:  " + name);
+			
+			PokerPlayer player4 = new PokerPlayer(name, false,5);
+			try {
+				game.AddPlayer(player4);			
+				System.out.println("You have added a human player");
+				} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		}
-		
+		else if (x==1) {
+			
+			PokerPlayer player4 = new PokerPlayer("player4", true,5);
+			try {
+				game.AddPlayer(player4);			
+				System.out.println("You have added a computer player");
+			} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}		
 		System.out.println("You just added Player 4");		
 		}
+	}
 	}
 	public class ActAddPlayer5 implements ActionListener {
 
@@ -1461,17 +1568,43 @@ public class GUI extends JFrame {
 		playersActive[4]=true;
 		player5Active = true;
 		addPlayer5.setVisible(false);
-		PokerPlayer player5 = new PokerPlayer("player5", false,5);
-		try {
-			game.AddPlayer(player5);
-		} catch (InvalidActivityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		String[] playerType = {"Human", "Computer"};
+		int x = JOptionPane.showOptionDialog(null, "Is this player a human player or a computer player?",
+		    "Add A Player", JOptionPane.DEFAULT_OPTION,
+		    JOptionPane.QUESTION_MESSAGE, null, playerType, playerType[1]);
+		if(x==0) {
+			
+			
+			// TODO Auto-generated method stub
+			String title = "Please enter the name of the player";
+			int initialType = JOptionPane.QUESTION_MESSAGE;				
+				String name = JOptionPane.showInputDialog(null, title, initialType);
+			    System.out.println("Players Name is:  " + name);
+			
+			PokerPlayer player5 = new PokerPlayer(name, false,5);
+			try {
+				game.AddPlayer(player5);			
+				System.out.println("You have added a human player");
+				} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		}
-		// TODO Auto-generated method stub
-		System.out.println("You just added Player 5");		
+		else if (x==1) {
+			
+			PokerPlayer player5 = new PokerPlayer("player5", true,5);
+			try {
+				game.AddPlayer(player5);			
+				System.out.println("You have added a computer player");
+			} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}		// TODO Auto-generated method stub
+		System.out.println("You just added Player 5");
 		}
 	}
+}
 	public class ActAddPlayer6 implements ActionListener {
 
 	@Override
@@ -1479,19 +1612,44 @@ public class GUI extends JFrame {
 		playersActive[5]=true;
 		player6Active = true;
 		addPlayer6.setVisible(false);
-		PokerPlayer player6 = new PokerPlayer("player6", false,5);
-		try {
-			game.AddPlayer(player6);
-		} catch (InvalidActivityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		String[] playerType = {"Human", "Computer"};
+		int x = JOptionPane.showOptionDialog(null, "Is this player a human player or a computer player?",
+		    "Add A Player", JOptionPane.DEFAULT_OPTION,
+		    JOptionPane.QUESTION_MESSAGE, null, playerType, playerType[1]);
+		if(x==0) {
+			
+			
+			// TODO Auto-generated method stub
+			String title = "Please enter the name of the player";
+			int initialType = JOptionPane.QUESTION_MESSAGE;				
+				String name = JOptionPane.showInputDialog(null, title, initialType);
+			    System.out.println("Players Name is:  " + name);
+			
+			PokerPlayer player6 = new PokerPlayer(name, false,5);
+			try {
+				game.AddPlayer(player6);			
+				System.out.println("You have added a human player");
+				} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 		}
-		// TODO Auto-generated method stub
+		else if (x==1) {
+			
+			PokerPlayer player6= new PokerPlayer("player6", true,5);
+			try {
+				game.AddPlayer(player6);			
+				System.out.println("You have added a computer player");
+			} catch (InvalidActivityException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}		// TODO Auto-generated method stub
 		System.out.println("You just added Player 6");		
 		}
 	}	
 
-
+	}
 	public class ActShowCards implements ActionListener {
 
 	@Override
