@@ -304,6 +304,15 @@ public class PokerGame {
   }
 
   /**
+   * Get the number of dollars a player has
+   * @param playerIndex Array index of the player to get the dollar amount of
+   * @return Current number of dollars the player has
+   */
+  public int getPlayerDollars(int playerIndex) {
+    return _players[playerIndex].getDollars();
+  }
+
+  /**
    * Get the current hand for a player
    * @param playerIndex Index of the player within the game
    * @return PlayerHand object with the specified player's current hand

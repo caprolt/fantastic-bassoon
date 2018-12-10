@@ -117,7 +117,47 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
   }
 
   public void HandleButtonRaisePress() {
-    System.out.println("Pressed Raise");
+
+    int minBet = _pokerGame.getCurrentMinumumBetForPlayerIndex(0);
+    int playerDollars = _pokerGame.getPlayerDollars(0);
+
+    // **** ask the user for a raise amount ****
+
+    String raiseString = JOptionPane.showInputDialog(
+      this, 
+      String.format("How much would you like to raise (%d to %d)?", minBet, playerDollars),
+      "Raise Amount",
+      JOptionPane.QUESTION_MESSAGE
+      );
+    
+    int raiseAmount = -1;
+
+    try {
+      raiseAmount = Integer.parseInt(raiseString);
+    } catch (NumberFormatException e) {
+      // **** do nothing ****
+    }
+    
+    // **** check for an invalid amount ****
+
+    if ((raiseAmount < minBet) || (raiseAmount > playerDollars)) {
+      // **** tell the user ****
+
+      JOptionPane.showMessageDialog(
+        this, 
+        "Invalid bet!",
+        "Raise Amount",
+        JOptionPane.INFORMATION_MESSAGE
+        );
+
+      // **** nothing else to do ****
+
+      return;
+    }
+
+    // **** perform the raise ****
+
+    _pokerGame.PlayerActionRaise(0, raiseAmount);
   }
 
   public void HandleButtonFoldPress() {
