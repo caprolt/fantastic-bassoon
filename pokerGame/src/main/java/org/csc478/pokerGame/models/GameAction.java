@@ -114,6 +114,32 @@ public class GameAction {
     return "Unknown Action";
   }
 
+    /**
+   * Get the action name for the specified action type
+   * @param actionType Action type to name
+   * @return Name of the specified action (e.g., "Shuffle Deck")
+   */
+  public static String getActionName(int actionType) {
+    switch (actionType)
+    {
+      case GameActionTypeInvalid: return "Invalid";
+      case GameActionTypeShuffleDeck: return "Shuffle Deck";
+      case GameActionTypeCall: return "Call";
+      case GameActionTypeRaise: return "Raise";
+      case GameActionTypeFold: return "Fold";
+      case GameActionTypeMuck: return "Muck";
+      case GameActionTypeRequestAnte: return "Request Ante";
+      case GameActionTypeBurnCard: return "Burn Card";
+      case GameActionTypeDealFaceUp: return "Deal Face Up";
+      case GameActionTypeDealFaceDown: return "Deal Face Down";
+      case GameActionTypeWaitOnPlayerAction: return "Wait on Player Action";
+      case GameActionTypeEndGame: return "End Game";
+      case GameActionTypeRequestPlayerAction: return "Request Player Action";
+      case GameActionTypeShowCards: return "Show Cards";
+    }
+    return "Unknown Action";
+  }
+
   /**
    * Gets the game action id for this action
    * @return UUID representing this game action

@@ -202,6 +202,15 @@ public class PokerGame {
   }
 
   /**
+   * Gets the name of the specified player
+   * @param playerIndex Game Player index for the player
+   * @return Name of the player
+   */
+  public String getPlayerName(int playerIndex) {
+    return _players[playerIndex].getPlayerName();
+  }
+
+  /**
    * Gets the face up scores of all other players, excluding the one passed
    * @param gamePlayerIndex Game player index for the player
    * @return Array of scores
@@ -721,7 +730,7 @@ public class PokerGame {
         {
           // **** set game state ****
 
-          _currentRound = GameRoundStateComputerPlayer;
+          _currentRoundState = GameRoundStateComputerPlayer;
 
           // **** ask the player for an action ****
 
@@ -732,6 +741,10 @@ public class PokerGame {
           // **** wait for human player ****
 
           _currentRoundState = GameRoundStateWaitingForPlayer;
+
+          // **** flag we are waiting for the player ****
+
+          RequestWaitingForPlayer(_players[playerNumber].getPlayerId(), playerNumber);
         }
       }
       break;
@@ -923,6 +936,14 @@ public class PokerGame {
    */
   private void RequestActionAfterPlayerAction()
   {
+    // System.out.println(String.format(
+    //   "Hand Players: %d, Players Showing: %d, Consecutive Calls: %d, Round: %d",
+    //   _handActivePlayerCount,
+    //   _playerShowingCount,
+    //   _consecutiveCallCount,
+    //   _currentRound
+    //   ));
+
     // **** check for a single player left or all remaining players showing ****
 
     if ((_handActivePlayerCount == 1) || (_playerShowingCount == _handActivePlayerCount))
@@ -1054,6 +1075,7 @@ public class PokerGame {
 
     _firstPlayerThisRound = ChooseFirstPlayer();
     _playerTurnsThisRound = 0;
+    _consecutiveCallCount = 0;
 
     // **** no bets have been made this round ****
 
@@ -1138,7 +1160,17 @@ public class PokerGame {
   {
     RequestAction(new GameAction(null, -1, _pokerGameId, GameAction.GameActionTypeRequestPlayerAction, 0, _currentRound, _gameActionCount++));
   }
-  
+
+  /**
+   * Add an action to the queue to show we are waiting on a player
+   * @param playerId ID of the player we are waiting for
+   * @param playerIndex Index of the player we are waiting for
+   */
+  private void RequestWaitingForPlayer(UUID playerId, int playerIndex)
+  {
+    RequestAction(new GameAction(playerId, playerIndex, _pokerGameId, GameAction.GameActionTypeWaitOnPlayerAction, 0, _currentRound, _gameActionCount++));
+  }
+
   /** Request that the dealer deals a face-up card to each player */
   private void RequestDealFaceUp()
   {
@@ -1321,12 +1353,8 @@ public class PokerGame {
       break;
     }
 
-    return null;
+    return validActions;
   }
-
-
-
-
 
   /**
    * Check to see if this game can be started right now

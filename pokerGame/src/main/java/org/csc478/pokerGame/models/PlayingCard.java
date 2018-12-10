@@ -150,19 +150,19 @@ public class PlayingCard {
   public static String getRankName(int cardRank) {
     switch (cardRank)
     {
-      case CardRankTwo:   return "Two";
-      case CardRankThree: return "Three";
-      case CardRankFour:  return "Four";
-      case CardRankFive:  return "Five";
-      case CardRankSix:   return "Six";
-      case CardRankSeven: return "Seven";
-      case CardRankEight: return "Eight";
-      case CardRankNine:  return "Nine";
-      case CardRankTen:   return "Ten";
-      case CardRankJack:  return "Jack";
-      case CardRankQueen: return "Queen";
-      case CardRankKing:  return "King";
-      case CardRankAce:   return "Ace";
+      case CardRankTwo:   return "2";
+      case CardRankThree: return "3";
+      case CardRankFour:  return "4";
+      case CardRankFive:  return "5";
+      case CardRankSix:   return "6";
+      case CardRankSeven: return "7";
+      case CardRankEight: return "8";
+      case CardRankNine:  return "9";
+      case CardRankTen:   return "10";
+      case CardRankJack:  return "J";
+      case CardRankQueen: return "Q";
+      case CardRankKing:  return "K";
+      case CardRankAce:   return "A";
     }
 
     return "Unknown Rank";

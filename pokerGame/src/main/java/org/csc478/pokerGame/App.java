@@ -18,6 +18,10 @@ import javax.swing.JFrame;
 public class App implements Runnable {
 	GUI pokerGUI = new GUI();
 
+
+	// 
+	//GameWindow window = new GameWindow();
+
     /**
      * Says hello to the world.
      * @param args The arguments of the program.
@@ -30,10 +34,13 @@ public class App implements Runnable {
 
 	@Override
 	public void run() {
+
+		// window.repaint();
+
 		//uncomment while loop to continuously paint to get updated board (may put in method to only update on variable changing to preserve resources
 		//while(true) {
-			pokerGUI.refresher();
-			pokerGUI.repaint();
+			// pokerGUI.refresher();
+			// pokerGUI.repaint();
 			
 		//}
 		// TODO Auto-generated method stub
