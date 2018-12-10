@@ -496,7 +496,7 @@ public class GUI extends JFrame {
 		private void startDealing(Graphics mb, int playerNumber, boolean[] playersActive) 
 		{
 			//cardImageIndex this variable is the card index for drawing the card in the right player cardSpace. 0-7; left to right; up to down  			
-			int cardImageIndex = 1;
+			int cardImageIndex = 0;
 			//looking at the gameDeck and returning the suit at and rank at index; index will tell which card is being drawn
 			int index = 0;
 			
@@ -510,13 +510,14 @@ public class GUI extends JFrame {
 			if( gameRound == 0)
 			{
 				for(int i = 0; i<3;i++) {
-				for(y = 0; y<playerNumber; y++) 
+					System.out.println("printing three rounds ");
+				for(y = 0; y<playersActive.length; y++) 
 				{
 					//for(cardImageIndex = 0; cardImageIndex<3; cardImageIndex++) {
 					//drawing cards to JFrame; three cards; game round hard set to 0 to get first three cards; need to turn first two over
 					if(playersActive[y]==true) {
 						drawCard(mb, index,i, y);index++;
-						//System.out.println("cardindex: " + cardImageIndex);
+						System.out.println("player: " + y);
 					
 						//game round is not zero so we only print one card to JFrame
 						if(i==0 || i ==1) 
@@ -1656,7 +1657,7 @@ public class GUI extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 		showCardsButtonHit = false;
 		// TODO Auto-generated method stub
-		System.out.println("Showing Human Player Cards");		
+		System.out.println("Showing Human Player Cards");
 		}
 
 	
