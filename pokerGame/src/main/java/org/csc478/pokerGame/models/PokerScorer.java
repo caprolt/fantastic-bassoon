@@ -46,6 +46,71 @@ public abstract class PokerScorer {
   //#region Public Interface . . .
 
   /**
+   * 
+   * @param score
+   * @return
+   */
+  public static String getScoreName(int score)
+  {
+    int scoreType = getHandTypeFromScore(score);
+
+    switch (scoreType) {
+      case ScoreTypeHighCard:
+      {
+        return "High Card";
+      }
+      //break;
+      case ScoreTypeOnePair:
+      {
+        return "A Pair";
+      }
+      //break;
+      case ScoreTypeTwoPairs:
+      {
+        return "2 Pairs";
+      }
+      //break;
+      case ScoreTypeThreeOfAKind:
+      {
+        return "3 of a Kind";
+      }
+      //break;
+      case ScoreTypeStraight:
+      {
+        return "Straight";
+      }
+      //break;
+      case ScoreTypeFlush:
+      {
+        return "Flush";
+      }
+      //break;
+      case ScoreTypeFullHouse:
+      {
+        return "Full House";
+      }
+      //break;
+      case ScoreTypeFourOfAKind:
+      {
+        return "4 of a Kind";
+      }
+      //break;
+      case ScoreTypeStraightFlush:
+      {
+        return "Straight Flush";
+      }
+      //break;
+      case ScoreTypeRoyalFlush:
+      {
+        return "Royal Flush";
+      }
+      //break;
+    }
+
+    return "N/A";
+  }
+
+  /**
    * Get the current Winning player ID
    * @param hands List of hands to score
    * @param scoreOnlyFaceUp True to score only face-up cards, false to score all cards

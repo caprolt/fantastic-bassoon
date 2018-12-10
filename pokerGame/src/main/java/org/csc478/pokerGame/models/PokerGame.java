@@ -54,6 +54,9 @@ public class PokerGame {
   /** Array of players in this game */
   private PokerPlayer _players[];
 
+  /** Array of GameActions with the last action from each player */
+  private GameAction _playerLastActions[];
+
   /** Array of flags for if a player is still in the game */
   private boolean _playerActiveFlags[];
   
@@ -68,6 +71,9 @@ public class PokerGame {
 
   /** Number of players in game (to avoid frequently accessing list size) */
   private int _playerCount;
+
+  /** Winning player index, -1 for no winner yet */
+  private int _winningPlayerIndex;
 
   /** Array of player hands in this game */
   private PlayerHand _playerHands[];
@@ -155,16 +161,59 @@ public class PokerGame {
   public int getNumberOfPlayers() { return _playerCount; }
 
   /**
+   * Gets the Number of Active Players in this game
+   * @return The Number of Active Players in this game
+   */
+  public int getNumberOfActivePlayers() { return _handActivePlayerCount; }
+
+  /**
    * Get the current round number of the game
    * @return The current round number of the game
    */
   public int getRoundNumber() { return _currentRound; }
 
   /**
+   * Get the winning player index for the hand
+   * @return -1 if there is no winner yet, player index otherwise
+   */
+  public int getWinnerIndex() { return _winningPlayerIndex; }
+
+  /**
    * Get the state of the current round of play
    * @return The state of the current round of play
    */
   public int getRoundState() { return _currentRoundState; }
+
+  public String getRoundStateName() {
+    switch (_currentRoundState)
+    {
+      case (GameRoundStateWaitingForPlayer):
+      {
+        return "Your turn!";
+      }
+      //break;
+      case (GameRoundStateDealing):
+      {
+        return "Dealing...";
+      }
+      //break;
+      case (GameRoundStateComputerPlayer):
+      {
+        return "Computers playing...";
+      }
+      //break;
+      case (GameRoundStateGameOver):
+      {
+        return "Hand Over!";
+      }
+      //break;
+      default:
+      {
+        return "Waiting...";
+      }
+      //break;
+    }
+  }
 
   /**
    * Get the current total bet required to stay in the game
@@ -246,6 +295,15 @@ public class PokerGame {
   }
 
   /**
+   * Get the score name for the given player (used in game over)
+   * @param playerIndex Array index of the player to get the score type of
+   * @return Name for UI display of the score type of this player's hand
+   */
+  public String getScoreName(int playerIndex) {
+    return PokerScorer.getScoreName(_playerHands[playerIndex].getScoreTotal());
+  }
+
+  /**
    * Get the current hand for a player
    * @param playerIndex Index of the player within the game
    * @return PlayerHand object with the specified player's current hand
@@ -260,6 +318,15 @@ public class PokerGame {
    */
   public boolean[] getActivePlayers() {
     return _playerActiveFlags;
+  }
+
+  /**
+   * Get the last action for the given player
+   * @param playerIndex Array player index of the player to reference
+   * @return GameAction representing the last action taken by the player
+   */
+  public GameAction getPlayerLastAction(int playerIndex) {
+    return _playerLastActions[playerIndex];
   }
 
   /**
@@ -407,6 +474,7 @@ public class PokerGame {
 
     _players = new PokerPlayer[7];
     _playerHands = new PlayerHand[7];
+    _playerLastActions = new GameAction[7];
     _playerCount = 0;
     _playerTurnsThisRound = 0;
 
@@ -500,11 +568,14 @@ public class PokerGame {
     for (int playerIndex = 0; playerIndex < _playerCount; playerIndex++)
     {
       _playerActiveFlags[playerIndex] = true;
+      _playerHands[playerIndex] = new PlayerHand(_players[playerIndex].getPlayerId(), playerIndex);
     }
 
     _handActivePlayerCount = _playerCount;
     _consecutiveCallCount = 0;
     _playerShowingCount = 0;
+
+    _winningPlayerIndex = -1;
 
     // **** game state is not valid yet ****
 
@@ -529,7 +600,6 @@ public class PokerGame {
         _gameProcessThread.start();
       }
     }
-
   }
 
   /**
@@ -563,7 +633,6 @@ public class PokerGame {
       ProcessAction(action);
     }
   }
-
 
   /**
    * Process an action in this game
@@ -657,13 +726,20 @@ public class PokerGame {
 
         for (int playerIndex = 0; playerIndex < _playerCount; playerIndex++)
         {
+          // **** check for player being out already ****
+
+          if (_playerActiveFlags[playerIndex] == false)
+          {
+            continue;
+          }
+
+          // **** flag that this card is being dealt face down ****
+
+          _gameDeck.CardAt(_numberOfCardsUsed).setCardState(PlayingCard.CardStateFaceDown);
+
           // **** deal this player the next card ****
 
           _playerHands[playerIndex].AddCardToHand(_gameDeck.CardAt(_numberOfCardsUsed));
-
-          // **** flag that this card has been dealt face down ****
-
-          _gameDeck.CardAt(_numberOfCardsUsed).setCardState(PlayingCard.CardStateFaceDown);
 
           // **** this card has been used ****
 
@@ -686,13 +762,19 @@ public class PokerGame {
 
         for (int playerIndex = 0; playerIndex < _playerCount; playerIndex++)
         {
+          // **** check for player being out already ****
+
+          if (_playerActiveFlags[playerIndex] == false)
+          {
+            continue;
+          }
+          // **** flag that this card is being dealt face up ****
+
+          _gameDeck.CardAt(_numberOfCardsUsed).setCardState(PlayingCard.CardStateFaceUp);
+
           // **** deal this player the next card ****
 
           _playerHands[playerIndex].AddCardToHand(_gameDeck.CardAt(_numberOfCardsUsed));
-
-          // **** flag that this card has been dealt face down ****
-
-          _gameDeck.CardAt(_numberOfCardsUsed).setCardState(PlayingCard.CardStateFaceUp);
 
           // **** this card has been used ****
 
@@ -791,11 +873,28 @@ public class PokerGame {
           // **** update the pot ****
 
           _potValue += raiseDifference;
+
+          if (raiseDifference < 0) {
+            System.out.println("Should not be here!");
+          }
+
         }
 
         // **** reset call count, raising counts as the first call ****
 
         _consecutiveCallCount = 1;
+
+        // **** set the new bet to stay in ****
+
+        _currentBetToStayIn = _playerBetTotalsThisRound[playerIndex];
+
+        System.out.println(String.format(
+          "Processed Raise, player: %d, stay in: %d total bet: %d, ",
+          playerIndex,
+          _currentBetToStayIn,
+          _playerBetTotalsThisRound[playerIndex]
+          ));
+
 
         // **** determine next action in the game ****
 
@@ -845,8 +944,19 @@ public class PokerGame {
           // **** update the pot ****
 
           _potValue += callDifference;
+
+          if (callDifference < 0) {
+            System.out.println("Should not be here!");
+          }
         }
         
+        System.out.println(String.format(
+          "Processed Call, player: %d, stay in: %d total bet: %d",
+          playerIndex,
+          _currentBetToStayIn,
+          _playerBetTotalsThisRound[playerIndex]
+          ));
+
         // **** flag that we called ****
 
         _consecutiveCallCount++;
@@ -913,6 +1023,10 @@ public class PokerGame {
   
         _players[winnerIndex].SetWinner(_playerHands[winnerIndex].getHandTypeTotal(), _potValue);
   
+        // **** flag winner in game ****
+
+        _winningPlayerIndex = winnerIndex;
+
         // **** add the pot value to the player total ****
   
         int playerDollars = _players[winnerIndex].getDollars();
@@ -1019,7 +1133,7 @@ public class PokerGame {
       {
         int handScore = _playerHands[handIndex].getScoreFaceUp();
 
-        if (handScore < lowScore)
+        if ((handScore < lowScore) && (_playerActiveFlags[handIndex] == true)) 
         {
           lowScore = handScore;
           playerNumber = handIndex;
@@ -1041,18 +1155,17 @@ public class PokerGame {
     {
       int handScore = _playerHands[handIndex].getScoreFaceUp();
 
-      if (handScore > highScore)
+      if ((handScore > highScore) && (_playerActiveFlags[handIndex] == true))
       {
         highScore = handScore;
         playerNumber = handIndex;
       }
     }
 
-    // **** 
+    // **** return the index of the first player ****
 
     return playerNumber;
   }
-
 
   /**
    * Advance to the next round of the game internally
@@ -1064,11 +1177,22 @@ public class PokerGame {
 
     if (isFirstRound)
     {
+      // **** force to round 1 ****
+
       _currentRound = 1;
     }
     else
     {
+      // **** increment our round ****
+
       _currentRound++;
+    }
+
+    // **** check for advancing too far ****
+
+    if (_currentRound > 7)
+    {
+      System.out.println("Should not be here!");
     }
 
     // **** figure out player turn info ****
@@ -1081,15 +1205,25 @@ public class PokerGame {
 
     _playerBetTotalsThisRound = new int[_playerCount];
 
+    // **** no actions have been taken this round ****
+
+    _playerLastActions = new GameAction[_playerCount];
+
     // **** configure betting for this round ****
 
+    _currentBetToStayIn = 0;
     _currentBetToStayIn = getClosestValidBet(0);
+
+    System.out.println(String.format(
+      "Advanced to round: %d, first player: %d, minimum bet: %d", 
+      _currentRound,
+      _firstPlayerThisRound,
+      _currentBetToStayIn));
 
     // **** we need to start player actions ****
 
     RequestPlayerAction();
   }
-
 
   /**
    * Request the next action after dealing a card
@@ -1207,15 +1341,24 @@ public class PokerGame {
    */
   public void PlayerActionFold(int playerIndex)
   {
-    RequestAction(
-      new GameAction(
-        _players[playerIndex].getPlayerId(), 
-        playerIndex, 
-        _pokerGameId, 
-        GameAction.GameActionTypeFold, 
-        0, 
-        _currentRound, 
-        _gameActionCount++));
+    // **** create our action ***
+
+    GameAction action = new GameAction(
+      _players[playerIndex].getPlayerId(), 
+      playerIndex, 
+      _pokerGameId, 
+      GameAction.GameActionTypeFold, 
+      0, 
+      _currentRound, 
+      _gameActionCount++);
+
+    // **** this is now the latest action for the player ****
+
+    _playerLastActions[playerIndex] = action;
+    
+    // **** request this action ****
+
+    RequestAction(action);
   }
 
   /**
@@ -1224,15 +1367,24 @@ public class PokerGame {
    */
   public void PlayerActionMuck(int playerIndex)
   {
-    RequestAction(
-      new GameAction(
-        _players[playerIndex].getPlayerId(), 
-        playerIndex, 
-        _pokerGameId, 
-        GameAction.GameActionTypeMuck, 
-        0, 
-        _currentRound, 
-        _gameActionCount++));
+    // **** create our action ***
+    
+    GameAction action = new GameAction(
+      _players[playerIndex].getPlayerId(), 
+      playerIndex, 
+      _pokerGameId, 
+      GameAction.GameActionTypeMuck, 
+      0, 
+      _currentRound, 
+      _gameActionCount++);
+
+    // **** this is now the latest action for the player ****
+
+    _playerLastActions[playerIndex] = action;
+    
+    // **** request this action ****
+
+    RequestAction(action);
   }
 
   /**
@@ -1242,15 +1394,24 @@ public class PokerGame {
    */
   public void PlayerActionRaise(int playerIndex, int amount)
   {
-    RequestAction(
-      new GameAction(
-        _players[playerIndex].getPlayerId(), 
-        playerIndex, 
-        _pokerGameId, 
-        GameAction.GameActionTypeRaise, 
-        amount, 
-        _currentRound, 
-        _gameActionCount++));
+    // **** create our action ***
+    
+    GameAction action = new GameAction(
+      _players[playerIndex].getPlayerId(), 
+      playerIndex, 
+      _pokerGameId, 
+      GameAction.GameActionTypeRaise, 
+      amount, 
+      _currentRound, 
+      _gameActionCount++);
+      
+    // **** this is now the latest action for the player ****
+
+    _playerLastActions[playerIndex] = action;
+    
+    // **** request this action ****
+
+    RequestAction(action);
   }
 
   /**
@@ -1260,15 +1421,24 @@ public class PokerGame {
    */
   public void PlayerActionCall(int playerIndex, int amount)
   {
-    RequestAction(
-      new GameAction(
-        _players[playerIndex].getPlayerId(), 
-        playerIndex, 
-        _pokerGameId, 
-        GameAction.GameActionTypeCall, 
-        amount, 
-        _currentRound, 
-        _gameActionCount++));
+    // **** create our action ***
+    
+    GameAction action = new GameAction(
+      _players[playerIndex].getPlayerId(), 
+      playerIndex, 
+      _pokerGameId, 
+      GameAction.GameActionTypeCall, 
+      amount, 
+      _currentRound, 
+      _gameActionCount++);
+      
+    // **** this is now the latest action for the player ****
+
+    _playerLastActions[playerIndex] = action;
+    
+    // **** request this action ****
+
+    RequestAction(action);
   }
 
   /**
@@ -1277,15 +1447,24 @@ public class PokerGame {
    */
   public void PlayerActionShow(int playerIndex)
   {
-    RequestAction(
-      new GameAction(
-        _players[playerIndex].getPlayerId(), 
-        playerIndex, 
-        _pokerGameId, 
-        GameAction.GameActionTypeShowCards, 
-        0, 
-        _currentRound, 
-        _gameActionCount++));
+    // **** create our action ***
+    
+    GameAction action = new GameAction(
+      _players[playerIndex].getPlayerId(), 
+      playerIndex, 
+      _pokerGameId, 
+      GameAction.GameActionTypeShowCards, 
+      0, 
+      _currentRound, 
+      _gameActionCount++);
+      
+    // **** this is now the latest action for the player ****
+
+    _playerLastActions[playerIndex] = action;
+    
+    // **** request this action ****
+
+    RequestAction(action);
   }
 
   /**
@@ -1362,6 +1541,13 @@ public class PokerGame {
    */
   public boolean CanGameStart()
   {
+    // **** check for game over ****
+
+    if (_currentRoundState == GameRoundStateGameOver)
+    {
+      return true;
+    }
+
     // **** check for game already in progress ****
 
     if (_currentRound != 0)

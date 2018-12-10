@@ -16,11 +16,8 @@ import javax.swing.JFrame;
  * Hello world!
  */
 public class App implements Runnable {
-	GUI pokerGUI = new GUI();
-
-
-	// 
-	//GameWindow window = new GameWindow();
+	// GUI pokerGUI = new GUI();
+	GameWindow window = new GameWindow();
 
     /**
      * Says hello to the world.

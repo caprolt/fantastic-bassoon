@@ -301,13 +301,13 @@ public class PokerPlayer {
       }
     }
 
-    // **** adjust confidence based on number of players ****
+    // **** adjust confidence based on number of active players ****
 
-    confidence = confidence / (double)game.getNumberOfPlayers();
+    confidence = confidence / (double)game.getNumberOfActivePlayers();
 
     // **** check for final round actions ****
 
-    if (roundNumber == 6)
+    if (roundNumber >= 6)
     {
       // **** check for muck ****
 
@@ -325,8 +325,11 @@ public class PokerPlayer {
       // **** show ****
 
       game.PlayerActionShow(_currentGamePlayerIndex);
-    }
 
+      // **** done ****
+
+      return;
+    }
 
     // **** check for bluff chance ****
 

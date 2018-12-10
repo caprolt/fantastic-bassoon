@@ -109,7 +109,7 @@ public class GameAction {
       case WaitOnPlayerAction: return "Wait on Player Action";
       case EndGame: return "End Game";
       case RequestPlayerAction: return "Request Player Action";
-      case ShowCards: return "Show Cards";
+      case ShowCards: return "Show";
     }
     return "Unknown Action";
   }
@@ -135,7 +135,7 @@ public class GameAction {
       case GameActionTypeWaitOnPlayerAction: return "Wait on Player Action";
       case GameActionTypeEndGame: return "End Game";
       case GameActionTypeRequestPlayerAction: return "Request Player Action";
-      case GameActionTypeShowCards: return "Show Cards";
+      case GameActionTypeShowCards: return "Show";
     }
     return "Unknown Action";
   }

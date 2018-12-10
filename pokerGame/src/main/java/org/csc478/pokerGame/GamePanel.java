@@ -15,6 +15,7 @@ import javax.activity.InvalidActivityException;
 import javax.swing.*;
 
 import org.csc478.pokerGame.models.CardDeck;
+import org.csc478.pokerGame.models.GameAction;
 import org.csc478.pokerGame.models.GameAction.GameActionTypes;
 import org.csc478.pokerGame.models.PlayerHand;
 import org.csc478.pokerGame.models.PlayingCard;
@@ -36,6 +37,9 @@ public class GamePanel extends JPanel {
   private static final Color _fontColor = Color.black;
   private static final Color _primaryColor = Color.black;
 
+  private static final Color _cardBackPrimaryColor = Color.blue;
+  private static final Color _cardBackSecondaryColor = Color.white;
+
   //#endregion UI Colors
 
   //#region Object variables
@@ -46,10 +50,11 @@ public class GamePanel extends JPanel {
 
   //#region Fonts
 
-  private static final Font _buttonFont = new Font("Times New Roman", Font.PLAIN, 13);
-	private static final Font _cardFont = new Font("Times New Roman", Font.BOLD, 19);
-	private static final Font _primaryFont = new Font("Times New Roman", Font.BOLD, 30);
-	private static final Font _secondaryFont = new Font("Times New Roman", Font.BOLD, 20);
+  private static final Font _buttonFont = new Font("Times New Roman", Font.PLAIN, 12);
+	private static final Font _cardFont = new Font("Times New Roman", Font.BOLD, 18);
+	private static final Font _primaryFont = new Font("Times New Roman", Font.BOLD, 28);
+	private static final Font _secondaryFont = new Font("Times New Roman", Font.BOLD, 24);
+	private static final Font _captionFont = new Font("Times New Roman", Font.PLAIN, 18);
 
   //#endregion Fonts
 
@@ -67,29 +72,35 @@ public class GamePanel extends JPanel {
 
   private static final int _maxPlayers = 6;
 
+
+  private static final int _panelWidth = 1280;
+  private static final int _panelHeight = 1000;
   //#endregion Misc Constants
 
-  //#region Size/Position variables
-
-  private int _panelWidth;
-  private int _panelHeight;
+  //#region Table Related
   
   private static final Point _tablePos = new Point(335, 210);
   private static final Dimension _tableDims = new Dimension(480, 480);
 
-  private Point _currentBetPos;
-  private Point _totalPotPos;
+  private static final int _tableTextOffsetX = 100;
+  private static final int _tableTextOffsetY = 120;
 
-  //#endregion Size/Position variables
+  private static final Point _tableRoundNumberPos = new Point(_tablePos.x + _tableTextOffsetX, _tablePos.y + _tableTextOffsetY);
+  private static final Point _tableBetPos = new Point(_tablePos.x + _tableTextOffsetX, _tablePos.y + _tableTextOffsetY + 50);
+  private static final Point _tablePotPos = new Point(_tablePos.x + _tableTextOffsetX, _tablePos.y + _tableTextOffsetY + 100);
+  private static final Point _tableStatePos = new Point(_tablePos.x + _tableTextOffsetX, _tablePos.y + _tableTextOffsetY + 150);
+  private static final Point _tableWinnerPos = new Point(_tablePos.x + _tableTextOffsetX, _tablePos.y + _tableTextOffsetY + 200);
+
+  //#endregion Table Related
 
   //#region Action Panel Related
-
   
   private static final String _actionPanelButtonText[] = {
     "CALL",
     "RAISE",
     "FOLD",
     "MUCK CARDS",
+    "SHOW CARDS",
     "ANTE"
   };
 
@@ -99,7 +110,8 @@ public class GamePanel extends JPanel {
   private static final int _actionPanelButtonRaise = 1;
   private static final int _actionPanelButtonFold = 2;
   private static final int _actionPanelButtonMuck = 3;
-  private static final int _actionPanelButtonAnte = 4;
+  private static final int _actionPanelButtonShow = 4;
+  private static final int _actionPanelButtonAnte = 5;
 
   private JButton _actionPanelButtons[];
 
@@ -113,7 +125,7 @@ public class GamePanel extends JPanel {
 
   private static final String _gamePanelButtonText[] = {
     "Add Player",
-    "Start Game",
+    "Start Game"
   };
 
   private static final int _gamePanelButtonCount = 2;
@@ -126,7 +138,6 @@ public class GamePanel extends JPanel {
   private static final Point _gamePanelOffset = new Point(1050, 500);
   private static final Dimension _gamePanelButtonDims = new Dimension(120, 40);
   private static final Dimension _gamePanelButtonSpacingDims = new Dimension(0, 44);
-
 
   //#endregion Game Panel Related
 
@@ -141,7 +152,10 @@ public class GamePanel extends JPanel {
     new Point(240, 300)
   };
 
-  private static final Dimension _playerSeatDims = new Dimension(90, 90);
+  private static final Dimension _playerSeatDims = new Dimension(94, 94);
+  
+  private static final Dimension _playerNameTextOffset = new Dimension(10, (int)(_playerSeatDims.height * 0.5) - 5);
+  private static final Dimension _playerActionTextOffset = new Dimension(10, (int)(_playerSeatDims.height * 0.5) + 20);
   
   private static final Point _playerCardPositions[] = {
     new Point(345,   5),
@@ -166,23 +180,23 @@ public class GamePanel extends JPanel {
 
   private JButton _playerAddButtons[];
 
-  private static final Point _playerAddButtonOffset = new Point(10, 10);
+  private static final Dimension _playerAddButtonOffset = new Dimension(10, 10);
   private static final Dimension _playerAddButtonDims = new Dimension(70, 70);
 
   //#endregion Player Related
 
   //#region Card Related
 
-  private static final Dimension _cardDims = new Dimension(64, 100);
+  private static final Dimension _cardDimsHoriz = new Dimension(64, 100);
+  private static final Dimension _cardDimsVert = new Dimension(100, 64);
   private static final Dimension _cardSpacingDims = new Dimension(2, 2);
+  private static final int _cardCornerRadius = 20;
+  private static final int _cardAccentOffset = 10;
+  private static final int _cardAccentOffset2x = _cardAccentOffset * 2;
 
-  // int cardSpace=2;
-	// int cardEdgeSoftener=11;
-	// int cardTW= 64;
-	// int cardTH= 100;
-	// int cardAW=60;
-	// int cardAH=96;	
-	
+  private static final Dimension _cardTextOffset = new Dimension(6, 6);
+  private static final Dimension _cardTextDims = new Dimension(15, 15);
+
   //#endregion Card Related
 
   //#region Constructors
@@ -190,29 +204,106 @@ public class GamePanel extends JPanel {
   /**
    * Primary constructor for game panel UI
    * @param gameWindow GameWindow this frame belongs in - will receive action notifications
-   * @param width Width to use for this frame
-   * @param height Height ot use for this frame
    */
-  public GamePanel(GameWindow gameWindow, int width, int height) {
+  public GamePanel(GameWindow gameWindow) {
 
     _gameWindow = gameWindow;
 
-    _panelWidth = width;
-    _panelHeight = height;
-
-    _currentBetPos = new Point((int)(width * 0.5) - 150, (int)(height * 0.5) - 150);
-    _totalPotPos = new Point((int)(width * 0.5) - 170, (int)(height * 0.5));
+    // _panelWidth = width;
+    // _panelHeight = height;
 
     // **** add UI buttons ****
 
     addButtons();
+
+    // **** cannot start game until players have been added ****
+
+    setEnableStartGame(false);
   }
 
   //#endregion Constructors
 
   //#region Public Interface
 
+  /**
+   * Enable and Disable UI elements for the current list of valid actions
+   * @param validActions List of GameActionTypes which are currently valid
+   */
+  public void enableValidActions(List<GameActionTypes> validActions) {
 
+    // **** start with all buttons assumed to be disabled ****
+
+    boolean actionButtonEnabled[] = new boolean[_actionPanelButtonCount];
+
+    // **** traverse our actions enabling buttons ****
+
+    for (int actionIndex = 0; actionIndex < validActions.size(); actionIndex++)
+    {
+      switch (validActions.get(actionIndex))
+      {
+        case RequestAnte:
+        {
+          actionButtonEnabled[_actionPanelButtonAnte] = true;
+        }
+        break;
+        case Call:
+        {
+          actionButtonEnabled[_actionPanelButtonCall] = true;
+        }
+        break;
+        case Raise:
+        {
+          actionButtonEnabled[_actionPanelButtonRaise] = true;
+        }
+        break;
+        case Fold:
+        {
+          actionButtonEnabled[_actionPanelButtonFold] = true;
+        }
+        break;
+        case Muck:
+        {
+          actionButtonEnabled[_actionPanelButtonMuck] = true;
+        }
+        break;
+        case ShowCards:
+        {
+          actionButtonEnabled[_actionPanelButtonShow] = true;
+        }
+        break;
+        default:
+        {
+          // **** do nothing ****
+        }
+        break;
+      }
+    }
+
+    // **** enable/disable our buttons ****
+
+    for (int buttonIndex = 0; buttonIndex < _actionPanelButtonCount; buttonIndex++)
+    {
+      // **** state comes from our array ****
+
+      _actionPanelButtons[buttonIndex].setEnabled(actionButtonEnabled[buttonIndex]);
+    }
+  }
+
+  /**
+   * Enable or disable the Start Game button
+   * @param canStart True if the button should be enabled, false if it should be disabled
+   */
+  public void setEnableStartGame(boolean canStart) {
+    _gamePanelButtons[_gamePanelButtonStartGame].setEnabled(canStart);
+  }
+
+    /**
+   * Enable or disable the Add Player button
+   * @param canStart True if the button should be enabled, false if it should be disabled
+   */
+  public void setEnableAddPlayer(boolean canAddPlayer) {
+    _gamePanelButtons[_gamePanelButtonAddPlayer].setEnabled(canAddPlayer);
+  }
 
   //#endregion Public Interface
 
@@ -235,7 +326,7 @@ public class GamePanel extends JPanel {
 
       // **** these buttons are disabled by default (game needs to start first) ****
 
-      // _actionPanelButtons[buttonIndex].setEnabled(false);
+      _actionPanelButtons[buttonIndex].setEnabled(false);
 
       // **** set location and size ****
 
@@ -304,6 +395,18 @@ public class GamePanel extends JPanel {
         }
         break;
 
+        case _actionPanelButtonShow:
+        {
+          // **** show cards button ****
+
+          _actionPanelButtons[buttonIndex].addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+              _gameWindow.HandleButtonShowPress();
+            }
+          });
+        }
+        break;
+
         case _actionPanelButtonAnte:
         {
           // **** ante button ****
@@ -355,7 +458,7 @@ public class GamePanel extends JPanel {
       switch (buttonIndex) {
         case _gamePanelButtonAddPlayer:
         {
-          // **** call button ****
+          // **** add player button ****
 
           _gamePanelButtons[buttonIndex].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -367,7 +470,7 @@ public class GamePanel extends JPanel {
 
         case _gamePanelButtonStartGame:
         {
-          // **** raise button ****
+          // **** start game button ****
 
           _gamePanelButtons[buttonIndex].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -382,53 +485,6 @@ public class GamePanel extends JPanel {
 
       this.add(_gamePanelButtons[buttonIndex]);
     }
-
-    // // **** create our player button array ****
-
-    // _playerAddButtons = new JButton[_maxPlayers];
-
-    // // **** traverse players ****
-
-    // for (int playerIndex = 0; playerIndex < _maxPlayers; playerIndex++)
-    // {
-
-    //   // **** create this button ****
-
-    //   _playerAddButtons[playerIndex] = new JButton("Add");
-
-    //   // **** set location and size ****
-
-    //   _playerAddButtons[playerIndex].setBounds(
-    //     _playerSeatPositions[playerIndex].x + _playerAddButtonOffset.x,
-    //     _playerSeatPositions[playerIndex].y + _playerAddButtonOffset.y,
-    //     _playerAddButtonDims.width,
-    //     _playerAddButtonDims.height);
-
-    //   // **** set color ****
-
-    //   _playerAddButtons[playerIndex].setBackground(_buttonColor);
-      
-    //   // **** set font ****
-
-    //   _playerAddButtons[playerIndex].setFont(_buttonFont);
-
-    //   // **** grab the player index as a final so that Java can copy it
-
-    //   final int arrayPlayerIndex = playerIndex;
-
-    //   // **** setup the correct event handler ****
-
-    //   _playerAddButtons[playerIndex].addActionListener(new ActionListener() {
-    //     public void actionPerformed(ActionEvent ae) {
-    //       _gameWindow.HandleButtonAddPlayerPress(arrayPlayerIndex);
-    //     }
-    //   });
-
-    //   // **** add to the UI ****
-
-    //   this.add(_playerAddButtons[playerIndex]);
-    // }
-
   }
 
   /**
@@ -493,14 +549,44 @@ public class GamePanel extends JPanel {
 
     graphics.drawString(
       String.format("Total Pot: $ %d", _gameWindow._pokerGame.getCurrentPot()),
-      _totalPotPos.x,
-      _totalPotPos.y);
+      _tablePotPos.x,
+      _tablePotPos.y
+      );
     
     graphics.drawString(
       String.format("Current Bet: $ %d", _gameWindow._pokerGame.getCurrentMinumumTotalBet()),
-      _currentBetPos.x,
-      _currentBetPos.y);
+      _tableBetPos.x,
+      _tableBetPos.y
+      );
     
+    graphics.drawString(
+      String.format(
+        "Round: #%d",
+        _gameWindow._pokerGame.getRoundNumber()
+        ),
+      _tableRoundNumberPos.x,
+      _tableRoundNumberPos.y
+      );
+
+    graphics.drawString(
+      _gameWindow._pokerGame.getRoundStateName(),
+      _tableStatePos.x,
+      _tableStatePos.y
+      );
+  
+    // **** check for a winner ****
+
+    if (_gameWindow._pokerGame.getWinnerIndex() != -1) {
+      graphics.drawString(
+        String.format(
+          "%s Wins $ %d!",
+          _gameWindow._pokerGame.getPlayerName(_gameWindow._pokerGame.getWinnerIndex()),
+          _gameWindow._pokerGame.getCurrentPot()
+        ),
+        _tableWinnerPos.x,
+        _tableWinnerPos.y
+        );
+    }
   }
 
   /**
@@ -508,10 +594,6 @@ public class GamePanel extends JPanel {
    * @param graphics Graphics context to draw onto
    */
   private void drawPlayers(Graphics graphics) {
-
-    // **** draw in our correct color ****
-
-    graphics.setColor(_primaryColor);
 
     // **** check for no cards to draw (done) ****
 
@@ -525,6 +607,10 @@ public class GamePanel extends JPanel {
 
     for (int playerIndex = 0; playerIndex < currentPlayerCount; playerIndex++)
     {
+    // **** draw in our correct color ****
+
+    graphics.setColor(_primaryColor);
+
       // **** draw this player's seat ****
 
       graphics.drawOval(
@@ -539,9 +625,46 @@ public class GamePanel extends JPanel {
       graphics.setFont(_secondaryFont);
       graphics.drawString(
         _gameWindow._pokerGame.getPlayerName(playerIndex),
-        _playerSeatPositions[playerIndex].x + 4,
-        _playerSeatPositions[playerIndex].y + (int)(_playerSeatDims.height * 0.5)
+        _playerSeatPositions[playerIndex].x + _playerNameTextOffset.width,
+        _playerSeatPositions[playerIndex].y + _playerNameTextOffset.height
       );
+
+      // **** check to see if this player has a 'last action' ****
+
+      GameAction lastAction = _gameWindow._pokerGame.getPlayerLastAction(playerIndex);
+
+      // **** check for displaying hand type ****
+
+      if (_gameWindow._pokerGame.getRoundState() == PokerGame.GameRoundStateGameOver) {
+        graphics.setFont(_captionFont);
+
+        graphics.drawString(
+          _gameWindow._pokerGame.getScoreName(playerIndex),
+          _playerSeatPositions[playerIndex].x + _playerActionTextOffset.width,
+          _playerSeatPositions[playerIndex].y + _playerActionTextOffset.height
+        );
+    }
+      // **** check for displaying last action ****
+      else if ((playerIndex != 0) && (lastAction != null)) {
+        graphics.setFont(_captionFont);
+
+        int lastActionType = lastAction.getActionType();
+        int lastActionAmount =lastAction.getAmount();
+
+        if (lastActionAmount != 0) {
+          graphics.drawString(
+            String.format("%s: $%d", GameAction.getActionName(lastActionType), lastAction.getAmount()),
+            _playerSeatPositions[playerIndex].x + _playerActionTextOffset.width,
+            _playerSeatPositions[playerIndex].y + _playerActionTextOffset.height
+          );
+        } else {
+          graphics.drawString(
+            GameAction.getActionName(lastActionType),
+            _playerSeatPositions[playerIndex].x + _playerActionTextOffset.width,
+            _playerSeatPositions[playerIndex].y + _playerActionTextOffset.height
+          );
+        }
+      }
 
       // **** draw this player's card area ****
 
@@ -564,9 +687,23 @@ public class GamePanel extends JPanel {
           _playerCardDimsVert.height
           );
       }
+
+      // **** determine if we should draw all cards face-up ****
+
+      boolean showCards = ((playerIndex == 0) || (_gameWindow._pokerGame.getRoundState() == PokerGame.GameRoundStateGameOver));
+
+      // **** draw this player's cards ****
+
+      drawCardsForPlayer(graphics, playerIndex, showCards);
     }
   }
 
+  /**
+   * Draw cards for a player
+   * @param graphics Graphics context to draw onto
+   * @param playerIndex Array index of the player
+   * @param showAllCards True to show all cards, false to show only face up cards
+   */
   private void drawCardsForPlayer(Graphics graphics, int playerIndex, boolean showAllCards) {
     // **** get this player's cards ****
 
@@ -576,40 +713,215 @@ public class GamePanel extends JPanel {
 
     for (int cardIndex = 0; cardIndex < cards.size(); cardIndex++)
     {
+      // **** draw this card ****
 
+      drawCard(graphics, playerIndex, cardIndex, cards.get(cardIndex), showAllCards);
     }
   }
 
   /**
    * Draw the specified card at the specifed location with the specified orientation
    * @param graphics Graphics context to draw onto
-   * @param position Position this card will be drawn at
-   * @param vertical True to draw vertical, false to draw horizontal
+   * @param playerIndex Index of the player this card belongs to
+   * @param cardNumber Card number to draw
    * @param card Card to draw
+   * @param forceFaceUp True to force draw this card face up
    */
-  private void drawCard(Graphics graphics, Point position, boolean vertical, PlayingCard card) {
+  private void drawCard(
+    Graphics graphics, 
+    int playerIndex,
+    int cardNumber, 
+    PlayingCard card,
+    boolean forceFaceUp) {
 
-    // **** draw the background ****
+    // **** determine if we are horizontal or vertical ****
+    
+    boolean horizontal = _playerCardsAreHoriz[playerIndex];
+  
+    // **** start with the player card area locaiton ****
+
+    Point cardPosition = new Point(_playerCardPositions[playerIndex]);
+    Dimension cardDims;
+
+    // **** handle horizontal vs vertical ****
+
+    if (horizontal == true) {
+      // **** cards use horizontal dimensions ****
+
+      cardDims = _cardDimsHoriz;
+
+      // **** offset cards on the x-axis ****
+
+      cardPosition.x += (cardDims.width + _cardSpacingDims.width) * cardNumber;
+
+    } else {
+      // **** cards use vertical dimensions ****
+
+      cardDims = _cardDimsVert;
+
+      // **** offset cards on the y-axis ****
+
+      cardPosition.y += (cardDims.height + _cardSpacingDims.height) * cardNumber;
+    }
+
+    // **** card outline is black ****
+
+    graphics.setColor(_primaryColor);
+
+    // **** draw the ouline ****
+
+    graphics.drawRect(cardPosition.x, cardPosition.y, cardDims.width, cardDims.height);
+
+    // **** check for drawing face-down ****
+
+    if ((forceFaceUp == false) && (card.getCardState() == PlayingCard.CardStateFaceDown)) {
+
+      // **** draw the base of the card ****
+
+      graphics.setColor(_cardBackPrimaryColor);
+
+      // **** draw the card base ****
+
+      graphics.fillRoundRect(
+        cardPosition.x,
+        cardPosition.y,
+        cardDims.width,
+        cardDims.height,
+        _cardCornerRadius,
+        _cardCornerRadius
+        );
+
+      // **** change to accent color ****
+
+      graphics.setColor(_cardBackSecondaryColor);
+
+      // **** draw the card accent ****
+
+      graphics.drawRect(
+        cardPosition.x + _cardAccentOffset,
+        cardPosition.y + _cardAccentOffset,
+        cardDims.width - _cardAccentOffset2x,
+        cardDims.height - _cardAccentOffset2x
+        );
+      
+      // **** done drawing ****
+
+      return;
+    }
+
+    // **** card front should be white for legibility ****
 
     graphics.setColor(Color.white);
 
-  //   graphics.fillRect(position.x, position.y+cardEdgeSoftener, cardAW, cardAH-2*cardEdgeSoftener);
-  //   graphics.fillRect(position.x+cardEdgeSoftener, position.y, cardAW-2*cardEdgeSoftener, cardAH);
-  //   graphics.fillOval(position.x, position.y, 2*cardEdgeSoftener, 2*cardEdgeSoftener);
-  //   graphics.fillOval(position.x+cardAW-2*cardEdgeSoftener, position.y+cardSpace, 2*cardEdgeSoftener, 2*cardEdgeSoftener);				 
-  //   graphics.fillOval(position.x, position.y+cardSpace+cardAH-2*cardEdgeSoftener, 2*cardEdgeSoftener, 2*cardEdgeSoftener);				
-  //   graphics.fillOval(position.x+cardAW-2*cardEdgeSoftener, position.y+cardAH+cardSpace-2*cardEdgeSoftener, 2*cardEdgeSoftener, 2*cardEdgeSoftener);				
+    // **** draw the base of the card ****
 
+    graphics.fillRoundRect(
+      cardPosition.x,
+      cardPosition.y,
+      cardDims.width,
+      cardDims.height,
+      _cardCornerRadius,
+      _cardCornerRadius
+      );
     
-  // private static final Dimension _cardDims = new Dimension(64, 100);
-  // private static final Dimension _cardSpacingDims = new Dimension(2, 2);
+    // **** get card info ****
 
-  // int cardSpace=2;
-	// int cardEdgeSoftener=11;
-	// int cardTW= 64;
-	// int cardTH= 100;
-	// int cardAW=60;
-	// int cardAH=96;	
+    int suit = card.getCardSuit();
+    int rank = card.getCardRank();
+    String rankName = PlayingCard.getRankName(rank);
+
+    // **** set our card drawing font ****
+
+    graphics.setFont(_cardFont);
+
+    // **** set the color based on the card type ****
+
+    if ((suit == PlayingCard.CardSuitDiamonds) || (suit == PlayingCard.CardSuitHearts)) {
+      graphics.setColor(Color.red);
+    } else {
+      graphics.setColor(Color.black);
+    }
+    
+    // **** draw the card rank ****
+
+    graphics.drawString(
+      rankName,
+      cardPosition.x + _cardTextOffset.width, 
+      cardPosition.y + _cardTextOffset.height + _cardTextDims.height
+      );
+
+    // **** bottom draw string needs special handling for '10' ****
+
+    if (rank == 10) {
+      graphics.drawString(
+        rankName, 
+        cardPosition.x + cardDims.width - _cardTextOffset.width - (int)(_cardTextDims.width * 1.5), 
+        cardPosition.y + cardDims.height - _cardTextOffset.height
+        );
+    } else {
+      graphics.drawString(
+        rankName, 
+        cardPosition.x + cardDims.width - _cardTextOffset.width - _cardTextDims.width, 
+        cardPosition.y + cardDims.height - _cardTextOffset.height
+        );
+    }
+    
+    // **** draw the correct symbol ****
+
+    switch (suit) {
+      case PlayingCard.CardSuitClubs:
+      {
+        int centerX = cardPosition.x + (int)(cardDims.width * 0.5);
+        int centerY = cardPosition.y + (int)(cardDims.height * 0.5);
+
+        graphics.fillOval(centerX-20, centerY-10, 21, 21);
+        graphics.fillOval(centerX+00, centerY-10, 21, 21);
+        graphics.fillOval(centerX-10, centerY-22, 20, 20);
+        graphics.fillRect(centerX-5,  centerY-10, 10, 30);
+      }
+      break;
+      case PlayingCard.CardSuitDiamonds:
+      {
+        int centerX = cardPosition.x + (int)(cardDims.width * 0.5);
+        int centerY = cardPosition.y + (int)(cardDims.height * 0.5);
+
+        int[] xPoly= {
+          centerX,
+          centerX - 15,
+          centerX,
+          centerX + 15
+        };
+        int[] yPoly= {
+          centerY - 20,
+          centerY,
+          centerY + 20,
+          centerY
+        };
+        graphics.fillPolygon(xPoly, yPoly, 4);
+      }
+      break;
+      case PlayingCard.CardSuitHearts:
+      {
+        int centerX = cardPosition.x + (int)(cardDims.width * 0.5);
+        int centerY = cardPosition.y + (int)(cardDims.height * 0.5);
+
+        graphics.fillOval(centerX - 14, centerY - 15, 21, 21);
+        graphics.fillOval(centerX, centerY - 15, 21, 21);
+        graphics.fillArc(centerX - 17, centerY, 40, 30, 49, 80);
+      }
+      break;
+      case PlayingCard.CardSuitSpades:
+      {
+        int centerX = cardPosition.x + (int)(cardDims.width * 0.5);
+        int centerY = cardPosition.y + (int)(cardDims.height * 0.5);
+
+        graphics.fillOval(centerX-18, centerY - 10,  20, 20);
+        graphics.fillOval(centerX-3,  centerY - 10,  20, 20);
+        graphics.fillArc( centerX-20, centerY-35, 40, 30, 230, 80);
+        graphics.fillRect(centerX-5,  centerY, 10, 20);
+      }
+      break;
+    }
 
   }
 

@@ -63,6 +63,8 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
 
   public PokerGame _pokerGame;
 
+  private GamePanel _gamePanel;
+
   /** A random number generator for this deck */
   private Random _rand;
 
@@ -87,15 +89,13 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
 
     // **** create our actual UI ****
 
-    GamePanel gamePanel = new GamePanel(
-      this,
-      _defaultWidth, 
-      _defaultHeight
+    _gamePanel = new GamePanel(
+      this
       );
 
     // **** set our content to our game UI ****
 
-    this.setContentPane(gamePanel);
+    this.setContentPane(_gamePanel);
 
     // **** do not use a layout manager ****
 
@@ -125,11 +125,17 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
   }
 
   public void HandleButtonMuckPress() {
-    System.out.println("Pressed Muck");
+    _pokerGame.PlayerActionMuck(0);
+  }
+
+  public void HandleButtonShowPress() {
+    _pokerGame.PlayerActionShow(0);
   }
 
   public void HandleButtonAntePress() {
-    System.out.println("Pressed Ante");
+    // **** update the UI ****
+
+    this.repaint();
   }
 
   public void HandleButtonAddPlayerPress() {
@@ -141,6 +147,10 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
     // **** check for too many players (ignore) ****
 
     if (currentPlayerCount >= 6) {
+      // **** disable the add player button ****
+
+      _gamePanel.setEnableAddPlayer(false);
+
       System.out.println("Ignoring add player request - too many players");
       return;
     }
@@ -152,12 +162,13 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
     // **** first player is human ****
 
     if (currentPlayerCount == 0) {
-      int initialType = JOptionPane.QUESTION_MESSAGE;				
+      // **** ask the user for a player name ****
+
       playerName = JOptionPane.showInputDialog(
-        null, 
+        this, 
         "Please enter your name",
         "Player Name",
-        initialType
+        JOptionPane.QUESTION_MESSAGE
         );
       isComputer = false;
     } else {
@@ -168,6 +179,12 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
 
         playerName = _computerPlayerNames[playerNameIndex];
         skillLevel = playerNameIndex % 10;
+    }
+
+    // **** check for no name (user cancel) ****
+
+    if ((playerName == null) || (playerName == "")) {
+      return;
     }
 
     // **** create our player ****
@@ -183,19 +200,39 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
       assert(false);
     }
 
+    // **** enable/disable the start game button ****
+
+    _gamePanel.setEnableStartGame(_pokerGame.CanGameStart());
+
+    // **** check if that was the last player we could add **** 
+
+    if (currentPlayerCount >= 5) {
+      // **** disable the add player button ****
+
+      _gamePanel.setEnableAddPlayer(false);
+    }
+
     // **** need to redraw ui ****
     
     this.repaint();
   }
 
   public void HandleButtonStartGamePress() {
-    
     // **** check for stargin the game ****
 
     if (!_pokerGame.CanGameStart()) {
+
       System.out.println("Cannot start yet");
       return;
     }
+
+    // **** disable the start game button ****
+
+    _gamePanel.setEnableStartGame(false);
+
+    // **** disable the add player button ****
+
+    _gamePanel.setEnableAddPlayer(false);
 
     // **** set ourselves to receive game action notifications ****
 
@@ -211,70 +248,36 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
 
     int gameActionType = action.getActionType();
 
-    System.out.println(String.format("Recevied action number: %d, type: %s (%d), for player: %d (%s)",
+    System.out.println(String.format("Recevied action number: %02d, type: %s (%d), for player: %d",
       action.getGameActionNumber(),
       GameAction.getActionName(gameActionType),
-      gameActionType,
+      action.getAmount(),
       action.getGamePlayerIndex(),
       action.getPlayerId()
       ));
     
+    // **** check for game over action type ****
+
+    if (gameActionType == GameAction.GameActionTypeEndGame) {
+      // **** re-enable the start game button ****
+
+      _gamePanel.setEnableStartGame(true);
+
+      // **** disable in-game actions ****
+
+      _gamePanel.enableValidActions(new ArrayList<GameActionTypes>());
+    }
 
     // **** check for player action type ****
 
     if (gameActionType == GameAction.GameActionTypeWaitOnPlayerAction) {
-
-      // **** traverse players and output cards ****
-
-      int playerCount = _pokerGame.getNumberOfPlayers();
-
-      for (int playerIndex = 0; playerIndex < playerCount; playerIndex++)
-      {
-        // **** get cards ****
-
-        List<PlayingCard> cards = _pokerGame.getPlayerHand(playerIndex).getCards();
-
-        System.out.print(String.format("Player: %d cards: ", playerIndex));
-
-        // **** traverse cards ****
-
-        for (int cardIndex = 0; cardIndex < cards.size(); cardIndex++)
-        {
-          PlayingCard card = cards.get(cardIndex);
-
-          // **** output this card ****
-
-          System.out.print(String.format("%s of %s ",
-            PlayingCard.getRankName(card.getCardRank()),
-            PlayingCard.getSuitName(card.getCardSuit())
-            ));
-          
-          if (card.getCardState() == PlayingCard.CardStateFaceUp) {
-            System.out.print(" (U), ");
-          } else {
-            System.out.print(" (D), ");
-          }
-        }
-
-        System.out.println();
-      }
-
       // **** get list of valid actions ****
 
       List<GameActionTypes> validActions = _pokerGame.getValidPlayerActions();
 
-      // **** get the round number ****
+      // **** enable and disable UI elements ****
 
-      int roundNumber = _pokerGame.getRoundNumber();
-
-      // **** 
-
-      System.out.println(String.format("Round: %d valid actions: ", roundNumber));
-
-      for (int actionIndex = 0; actionIndex < validActions.size(); actionIndex++)
-      {
-        System.out.println(String.format("\t%s", GameAction.getActionName(validActions.get(actionIndex))));
-      }
+      _gamePanel.enableValidActions(validActions);
     }
 
     // **** update the UI ****

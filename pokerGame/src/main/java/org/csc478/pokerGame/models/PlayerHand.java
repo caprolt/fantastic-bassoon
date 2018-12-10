@@ -176,7 +176,7 @@ public class PlayerHand {
   {
     // **** check for maximum cards ****
 
-    if (_numberOfCardsInHand == _handSizeMinusOne)
+    if (_numberOfCardsInHand == _handSize)
     {
       // **** cannot add ****
 
