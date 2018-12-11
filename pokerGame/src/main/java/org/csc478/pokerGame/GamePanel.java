@@ -3,7 +3,7 @@
  *     file: pokerGame\src\main\java\org\csc478\pokerGame\GamePanel.java
  *  created: 2018-12-09 14:58:30
  *       by: Gino Canessa
- * modified: 2018-12-09
+ * modified: 2018-12-10
  *       by: Gino Canessa
  *
  *  summary: Actual UI used by the poker game
@@ -11,30 +11,27 @@
 
 package org.csc478.pokerGame;
 
-import javax.activity.InvalidActivityException;
 import javax.swing.*;
 
-import org.csc478.pokerGame.models.CardDeck;
 import org.csc478.pokerGame.models.GameAction;
 import org.csc478.pokerGame.models.GameAction.GameActionTypes;
-import org.csc478.pokerGame.models.PlayerHand;
 import org.csc478.pokerGame.models.PlayingCard;
 import org.csc478.pokerGame.models.PokerGame;
-import org.csc478.pokerGame.models.PokerPlayer;
 
-import java.util.*;
 import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Swing JPanel decendent which implements the Poker user interface
+ */
 public class GamePanel extends JPanel {
 
   //#region UI Colors
 
   private static final Color _backgroundColor = new Color(178, 34, 34);
   private static final Color _buttonColor = new Color(204, 204, 0);
-  private static final Color _fontColor = Color.black;
   private static final Color _primaryColor = Color.black;
 
   private static final Color _cardBackPrimaryColor = Color.blue;
@@ -58,20 +55,9 @@ public class GamePanel extends JPanel {
 
   //#endregion Fonts
 
-  //#region Size/Position Constants
-
-  private static final Point _tableUiOffset = new Point(50, 50);
-  private static final Dimension _tableUiDims = new Dimension(900, 400);
-
-  private static final Dimension _primaryButtonDims = new Dimension(120, 40);
-  // private static final Dimension _primaryButtonSpacingDims = new Dimension(4, 4);
-
-  //#endregion Size/Position Constants
-
   //#region Misc Constants
 
-  private static final int _maxPlayers = 6;
-
+  private static final long serialVersionUID = 2;
 
   private static final int _panelWidth = 1280;
   private static final int _panelHeight = 1000;
@@ -141,6 +127,21 @@ public class GamePanel extends JPanel {
 
   //#endregion Game Panel Related
 
+  //#region Player Money Related
+
+  private static final Point _playerMoneyPositions[] = {
+    new Point(10, 20),
+    new Point(10, 40),
+    new Point(10, 60),
+    new Point(10, 80),
+    new Point(10, 100),
+    new Point(10, 120),
+    new Point(10, 140),
+    new Point(10, 160)
+  };
+
+  //#endregion Player Money Related
+
   //#region Player Related
 
   private static final Point _playerSeatPositions[] = {
@@ -177,11 +178,6 @@ public class GamePanel extends JPanel {
     true,
     false
   };
-
-  private JButton _playerAddButtons[];
-
-  private static final Dimension _playerAddButtonOffset = new Dimension(10, 10);
-  private static final Dimension _playerAddButtonDims = new Dimension(70, 70);
 
   //#endregion Player Related
 
@@ -299,7 +295,7 @@ public class GamePanel extends JPanel {
 
     /**
    * Enable or disable the Add Player button
-   * @param canStart True if the button should be enabled, false if it should be disabled
+   * @param canAddPlayer True if the button should be enabled, false if it should be disabled
    */
   public void setEnableAddPlayer(boolean canAddPlayer) {
     _gamePanelButtons[_gamePanelButtonAddPlayer].setEnabled(canAddPlayer);
@@ -607,9 +603,9 @@ public class GamePanel extends JPanel {
 
     for (int playerIndex = 0; playerIndex < currentPlayerCount; playerIndex++)
     {
-    // **** draw in our correct color ****
+      // **** draw in our correct color ****
 
-    graphics.setColor(_primaryColor);
+      graphics.setColor(_primaryColor);
 
       // **** draw this player's seat ****
 
@@ -633,21 +629,33 @@ public class GamePanel extends JPanel {
 
       GameAction lastAction = _gameWindow._pokerGame.getPlayerLastAction(playerIndex);
 
+      // **** set font to the caption font for player totals and other content ****
+
+      graphics.setFont(_captionFont);
+
+      // **** draw the player's total amount ****
+
+      graphics.drawString(
+        String.format(
+          "$ %d: %s",
+          _gameWindow._pokerGame.getPlayerDollars(playerIndex),
+          _gameWindow._pokerGame.getPlayerName(playerIndex)
+          ),
+        _playerMoneyPositions[playerIndex].x,
+        _playerMoneyPositions[playerIndex].y
+      );
+
       // **** check for displaying hand type ****
 
       if (_gameWindow._pokerGame.getRoundState() == PokerGame.GameRoundStateGameOver) {
-        graphics.setFont(_captionFont);
-
         graphics.drawString(
           _gameWindow._pokerGame.getScoreName(playerIndex),
           _playerSeatPositions[playerIndex].x + _playerActionTextOffset.width,
           _playerSeatPositions[playerIndex].y + _playerActionTextOffset.height
         );
-    }
+      }
       // **** check for displaying last action ****
       else if ((playerIndex != 0) && (lastAction != null)) {
-        graphics.setFont(_captionFont);
-
         int lastActionType = lastAction.getActionType();
         int lastActionAmount =lastAction.getAmount();
 

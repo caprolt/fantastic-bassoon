@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PlayerHand.java
  *  created: 2018-11-12 12:36:29
  *       by: Gino Canessa
- * modified: 2018-11-12
+ * modified: 2018-12-10
  *       by: Gino Canessa
  *
  *  summary: Class to track a player's hand
@@ -23,7 +23,7 @@ public class PlayerHand {
   private static final int _handSize = 7;
 
   /** Total nubmer of cards in hand minus one (for boundary checking) */
-  private static final int _handSizeMinusOne = _handSize - 1;
+  // private static final int _handSizeMinusOne = _handSize - 1;
 
   /** Flags for if a card is dealt face up or down to this hand */
   private static final boolean _cardFaceUpArray[] = {

@@ -3,7 +3,7 @@
  *     file: pokerGame\src\main\java\org\csc478\pokerGame\GameWindow.java
  *  created: 2018-12-09 14:52:11
  *       by: Gino Canessa
- * modified: 2018-12-09
+ * modified: 2018-12-10
  *       by: Gino Canessa
  *
  *  summary: Main UI Window for this game
@@ -15,27 +15,27 @@ package org.csc478.pokerGame;
 import javax.activity.InvalidActivityException;
 import javax.swing.*;
 
-import org.csc478.pokerGame.models.CardDeck;
 import org.csc478.pokerGame.models.GameAction;
 import org.csc478.pokerGame.models.GameAction.GameActionTypes;
-import org.csc478.pokerGame.models.PlayerHand;
-import org.csc478.pokerGame.models.PlayingCard;
 import org.csc478.pokerGame.models.PokerGame;
 import org.csc478.pokerGame.models.PokerPlayer;
 
 import java.util.*;
 import java.util.List;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+/**
+ * Swing JFrame decendent which displays a window to play poker.
+ * Listens for property change events from a PokerGame object.
+ */
 public class GameWindow extends JFrame implements PropertyChangeListener {
 
   //#region Constants
 
+  private static final long serialVersionUID = 2;
+  
   private static final int _defaultWidth = 1280;
   private static final int _defaultHeight = 1000;
 
@@ -61,8 +61,10 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
 
   //#region Object variables
 
+  /** Reference to the running game for use by ourselves and the GamePanel */
   public PokerGame _pokerGame;
 
+  /** Game panel showing the UI */
   private GamePanel _gamePanel;
 
   /** A random number generator for this deck */
@@ -72,6 +74,7 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
 
   //#region Constructors
 
+  /** Default constructor */
   public GameWindow() {
 
     // **** initialize our random number generator ****
@@ -104,18 +107,22 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
     // **** display our window ****
 
     this.setVisible(true);
+
+    // **** add the human player ****
+
+    HandleButtonAddPlayerPress();
   }
 
   //#endregion Constructors
 
-
-
   //#region Action handlers
-
+  
+  /** Function to handle the Button Press of a Call action */
   public void HandleButtonCallPress() {
     _pokerGame.PlayerActionCall(0, _pokerGame.getCurrentMinumumBetForPlayerIndex(0));
   }
 
+  /** Function to handle the Button Press of a Raise action */
   public void HandleButtonRaisePress() {
 
     int minBet = _pokerGame.getCurrentMinumumBetForPlayerIndex(0);
@@ -160,24 +167,29 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
     _pokerGame.PlayerActionRaise(0, raiseAmount);
   }
 
+  /** Function to handle the Button Press of a Fold action */
   public void HandleButtonFoldPress() {
     _pokerGame.PlayerActionFold(0);
   }
 
+  /** Function to handle the Button Press of a Muck action */
   public void HandleButtonMuckPress() {
     _pokerGame.PlayerActionMuck(0);
   }
 
+  /** Function to handle the Button Press of a Show Cards action */
   public void HandleButtonShowPress() {
     _pokerGame.PlayerActionShow(0);
   }
 
+  /** Function to handle the Button Press of a Ante action */
   public void HandleButtonAntePress() {
     // **** update the UI ****
 
     this.repaint();
   }
 
+  /** Function to handle the Button Press of a Add Player action */
   public void HandleButtonAddPlayerPress() {
 
     // **** get the number of players so we know if human or computer ****
@@ -257,6 +269,7 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
     this.repaint();
   }
 
+  /** Function to handle the Button Press of a Start Game action */
   public void HandleButtonStartGamePress() {
     // **** check for stargin the game ****
 
@@ -283,6 +296,10 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
     _pokerGame.StartGame();
   }
 
+  /**
+   * Property Change event listener to subscribe to GameAction notifications
+   * @param event Event passed to this listener
+   */
   public void propertyChange(PropertyChangeEvent event) {
     GameAction action = (GameAction)event.getNewValue();
 

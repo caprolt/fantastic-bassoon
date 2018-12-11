@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PokerGame.java
  *  created: 2018-11-09 13:09:08
  *       by: Gino Canessa
- * modified: 2018-11-12
+ * modified: 2018-12-10
  *       by: Gino Canessa
  *
  *  summary: Internal representation of a single game of poker

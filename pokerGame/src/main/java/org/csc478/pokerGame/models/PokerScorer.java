@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PokerScorer.java
  *  created: 2018-11-12 13:42:59
  *       by: Gino Canessa
- * modified: 2018-11-12
+ * modified: 2018-12-10
  *       by: Gino Canessa
  *
  *  summary: 
@@ -46,9 +46,9 @@ public abstract class PokerScorer {
   //#region Public Interface . . .
 
   /**
-   * 
-   * @param score
-   * @return
+   * Function to get the name of a hand type from a score (e.g., 2 Pair)
+   * @param score Score to check
+   * @return String with hand type or "Out"
    */
   public static String getScoreName(int score)
   {
@@ -107,7 +107,7 @@ public abstract class PokerScorer {
       //break;
     }
 
-    return "N/A";
+    return "Out";
   }
 
   /**

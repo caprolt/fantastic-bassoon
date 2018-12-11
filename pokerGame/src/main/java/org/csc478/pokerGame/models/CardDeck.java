@@ -15,6 +15,7 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Class to implement functionality relating to a Deck of PlayingCards */
 public class CardDeck {
   //#region Private Constants . . .
 

@@ -9,18 +9,18 @@
 
 package org.csc478.pokerGame;
 
-import javax.swing.JFrame;
+// import javax.swing.JFrame;
 
 
 /**
- * Hello world!
+ * Main entry point of application - spawns a window to play poker
  */
 public class App implements Runnable {
 	// GUI pokerGUI = new GUI();
 	GameWindow window = new GameWindow();
 
     /**
-     * Says hello to the world.
+     * Starts the program to player poker
      * @param args The arguments of the program.
      */
     public static void main(String[] args) {
@@ -38,9 +38,6 @@ public class App implements Runnable {
 		//while(true) {
 			// pokerGUI.refresher();
 			// pokerGUI.repaint();
-			
 		//}
-		// TODO Auto-generated method stub
-		
 	}
 }
