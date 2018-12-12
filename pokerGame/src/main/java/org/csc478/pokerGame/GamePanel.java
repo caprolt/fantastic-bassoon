@@ -660,9 +660,11 @@ public class GamePanel extends JPanel {
 
       graphics.drawString(
         String.format(
-          "$ %d: %s",
+          "$ %d: %s (%d-%d)",
           _gameWindow._pokerGame.getPlayerDollars(playerIndex),
-          _gameWindow._pokerGame.getPlayerName(playerIndex)
+          _gameWindow._pokerGame.getPlayerName(playerIndex),
+          _gameWindow._pokerGame.getPlayerWins(playerIndex),
+          _gameWindow._pokerGame.getPlayerLosses(playerIndex)
           ),
         _playerMoneyPositions[playerIndex].x,
         _playerMoneyPositions[playerIndex].y

@@ -14,6 +14,24 @@ package org.csc478.pokerGame.models;
 import java.util.Random;
 import java.util.UUID;
 
+/**
+ * PokerPlayer class to track player information
+ * @csc478.req REQ020600 - Track Human Player Information
+ * @csc478.req REQ020601 - Human Name
+ * @csc478.req REQ020602 - Human Current Money
+ * @csc478.req REQ020603 - Human Total Debt
+ * @csc478.req REQ020604 - Human Number of wins
+ * @csc478.req REQ020605 - Human Number of losses
+ * @csc478.req REQ020700 - Human Borrow Money
+ * @csc478.req REQ030100 - Track Computer Player Information
+ * @csc478.req REQ030101 - Computer Player Name
+ * @csc478.req REQ030102 - Computer Current Money
+ * @csc478.req REQ030103 - Computer Total Debt
+ * @csc478.req REQ030104 - Computer Number of Wins
+ * @csc478.req REQ030105 - Computer Number of Losses
+ * @csc478.req REQ030106 - Computer Skill Level
+ * @csc478.req REQ030200 - Computer Borrow money
+ */
 public class PokerPlayer {
 
   //#region Private Constants . . .
@@ -124,6 +142,9 @@ public class PokerPlayer {
    */
   public void setWins(final int value) { _wins = value; }
 
+  /** Increments the number of wins by one */
+  public void incrementWins() { _wins++; }
+
   /**
    * Gets the number of losses for this player
    * @return The number of losses for this player
@@ -134,6 +155,9 @@ public class PokerPlayer {
    * @param value The number of losses for this player
    */
   public void setLosses(final int value) {_losses = value;}
+
+  /** Increments the number of losses by one */
+  public void incrementLosses() {_losses++;}
 
   /**
    * Gets the current amount of money (in dollars) ths player has

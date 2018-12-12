@@ -267,6 +267,24 @@ public class PokerGame {
   }
 
   /**
+   * Gets the number of wins for the specified player
+   * @param playerIndex Game Player index for the player
+   * @return Number of wins for the player
+   */
+  public int getPlayerWins(int playerIndex) {
+    return _players[playerIndex].getWins();
+  }
+
+  /**
+   * Gets the number of losses for the specified player
+   * @param playerIndex Game Player index for the player
+   * @return Number of losses for the player
+   */
+  public int getPlayerLosses(int playerIndex) {
+    return _players[playerIndex].getLosses();
+  }
+
+  /**
    * Gets the face up scores of all other players, excluding the one passed
    * @param gamePlayerIndex Game player index for the player
    * @return Array of scores
@@ -1101,9 +1119,22 @@ public class PokerGame {
           }
         }
   
-        // **** notifiy our winner ****
+        // **** notifiy our winners and losers ****
   
-        _players[winnerIndex].SetWinner(_playerHands[winnerIndex].getHandTypeTotal(), _potValue);
+        for (int playerIndex = 0; playerIndex < _playerCount; playerIndex++)
+        {
+          // **** check for new high score - ties go to closer to dealer ****
+  
+          if (playerIndex == winnerIndex)
+          {
+            _players[playerIndex].incrementWins();
+          }
+          else
+          {
+            _players[playerIndex].incrementLosses();
+          }
+        }
+
   
         // **** flag winner in game ****
 
