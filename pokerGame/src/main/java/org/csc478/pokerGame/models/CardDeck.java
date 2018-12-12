@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\CardDeck.java
  *  created: 2018-11-09 13:03:35
  *       by: Gino Canessa
- * modified: 2018-11-12
+ * modified: 2018-12-11
  *       by: Gino Canessa
  *
  *  summary: A deck of playing cards.
@@ -15,7 +15,14 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Class to implement functionality relating to a Deck of PlayingCards */
+/** 
+ * Class to implement functionality relating to a Deck of PlayingCards
+ * @csc478.req REQ040100 - Must track deck information
+ * @csc478.req REQ040101 - Deck must have correct 52 cards
+ * @csc478.req REQ040200 - Deck must allow shuffle
+ * @csc478.req REQ040201 - Deck must allow psuedorandom shuffle
+ * @csc478.req REQ040202 - Deck must allow sort
+ */
 public class CardDeck {
   //#region Private Constants . . .
 

@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PokerPlayer.java
  *  created: 2018-11-09 13:03:59
  *       by: Gino Canessa
- * modified: 2018-11-12
+ * modified: 2018-12-11
  *       by: Gino Canessa
  *
  *  summary: A poker player object

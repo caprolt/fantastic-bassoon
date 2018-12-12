@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PlayingCard.java
  *  created: 2018-11-09 13:03:08
  *       by: Gino Canessa
- * modified: 2018-11-12
+ * modified: 2018-12-11
  *       by: Gino Canessa
  *
  *  summary: A standard playing card, with Suit and Rank.
@@ -14,6 +14,12 @@ package org.csc478.pokerGame.models;
 import java.security.InvalidParameterException;
 import java.util.Comparator;
 
+/**
+ * PlayingCard class to represent a standard playing card.
+ * @csc478.req REQ040300 - Must track card information
+ * @csc478.req REQ040301 - Suit
+ * @csc478.req REQ040302 - Rank
+ */
 public class PlayingCard {
   //#region Private Constants . . .
 

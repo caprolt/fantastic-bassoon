@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PlayerHand.java
  *  created: 2018-11-12 12:36:29
  *       by: Gino Canessa
- * modified: 2018-12-10
+ * modified: 2018-12-11
  *       by: Gino Canessa
  *
  *  summary: Class to track a player's hand
@@ -16,6 +16,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * PlayerHand class to represent a player's hand within a game
+ * @csc478.req REQ040600 - Track Player Hand
+ * @csc478.req REQ040601 - Up to 7 cards
+ * @csc478.req REQ040602 - Face up/down state
+ */
 public class PlayerHand {
   //#region Private Constants . . .
 

@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PokerScorer.java
  *  created: 2018-11-12 13:42:59
  *       by: Gino Canessa
- * modified: 2018-12-10
+ * modified: 2018-12-11
  *       by: Gino Canessa
  *
  *  summary: 
@@ -15,7 +15,20 @@ import java.util.List;
 import java.security.InvalidParameterException;
 import java.util.UUID;
 
-
+/**
+ * Class to score poker hands with sortable results.
+ * @csc478.req REQ061300 - Find best hand from 1-7 cards
+ * @csc478.req REQ061301 - Royal Flush
+ * @csc478.req REQ061302 - Straight Flush
+ * @csc478.req REQ061303 - 4 of a Kind
+ * @csc478.req REQ061304 - Full house
+ * @csc478.req REQ061305 - Flush
+ * @csc478.req REQ061306 - Straight
+ * @csc478.req REQ061307 - 3 of a Kind
+ * @csc478.req REQ061308 - 2 Pairs
+ * @csc478.req REQ061309 - 1 Pair
+ * @csc478.req REQ061310 - High Card
+ */
 public abstract class PokerScorer {
 
   //#region Public Constants . . .

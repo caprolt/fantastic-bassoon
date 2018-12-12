@@ -3,7 +3,7 @@
  *     file: src\main\java\org\csc478\pokerGame\models\PokerGame.java
  *  created: 2018-11-09 13:09:08
  *       by: Gino Canessa
- * modified: 2018-12-10
+ * modified: 2018-12-11
  *       by: Gino Canessa
  *
  *  summary: Internal representation of a single game of poker
@@ -23,6 +23,74 @@ import java.util.UUID;
 import javax.activity.InvalidActivityException;
 
 import org.csc478.pokerGame.models.GameAction.GameActionTypes;
+
+/**
+ * PokerGame class to track game state and implement game logic.
+ * @csc478.req REQ020800 - Humans cannot borrow while game is in progress
+ * @csc478.req REQ020900 - Humans cannot bet more than they have
+ * @csc478.req REQ030300 - Computer players cannot borrow while game is in progress
+ * @csc478.req REQ030400 - Computer players cannot bet more than they have
+ * @csc478.req REQ050100 - Uniquely track games
+ * @csc478.req REQ050300 - Track players for each game
+ * @csc478.req REQ050400 - Track game objects for game
+ * @csc478.req REQ050500 - Ante
+ * @csc478.req REQ050600 - Low stake limit
+ * @csc478.req REQ050700 - High stake limit
+ * @csc478.req REQ050800 - Number of players
+ * @csc478.req REQ050900 - Position of players in game
+ * @csc478.req REQ051000 - Position of dealer in game
+ * @csc478.req REQ060100 - Shuffle deck before dealing
+ * @csc478.req REQ060200 - Ante payment
+ * @csc478.req REQ060300 - Burn first card of deal
+ * @csc478.req REQ060400 - Deal face down
+ * @csc478.req REQ060401 - Card 1 is dealt face down
+ * @csc478.req REQ060402 - Card 2 is dealt face down
+ * @csc478.req REQ060403 - Card 7 is dealt face down
+ * @csc478.req REQ060500 - Deal face up
+ * @csc478.req REQ060501 - Card 3 is dealt face up
+ * @csc478.req REQ060502 - Card 4 is dealt face up
+ * @csc478.req REQ060503 - Card 5 is dealt face up
+ * @csc478.req REQ060504 - Card 6 is dealt face up
+ * @csc478.req REQ060600 - Determine first player to take action each round
+ * @csc478.req REQ060601 - Round 1
+ * @csc478.req REQ060602 - Round 2
+ * @csc478.req REQ060603 - Round 3
+ * @csc478.req REQ060604 - Round 4
+ * @csc478.req REQ060605 - Round 5
+ * @csc478.req REQ060606 - Showdown with no bets in round 5
+ * @csc478.req REQ060607 - Showdown with bets in round 5
+ * @csc478.req REQ060608 - Ties go to player closer to dealer
+ * @csc478.req REQ060700 - Process Round 1 Actions
+ * @csc478.req REQ060701 - Forced bet
+ * @csc478.req REQ060702 - Raise (any)
+ * @csc478.req REQ060703 - Call (match)
+ * @csc478.req REQ060704 - Fold
+ * @csc478.req REQ060800 - Process Round 2 Actions
+ * @csc478.req REQ060801 - Forced bet
+ * @csc478.req REQ060802 - Raise only with showing pair
+ * @csc478.req REQ060803 - Raise only in multiples of stakes
+ * @csc478.req REQ060804 - Raise multiple restrictions
+ * @csc478.req REQ060805 - Call (match)
+ * @csc478.req REQ060806 - Fold
+ * @csc478.req REQ060900 - Process Round 3 Actions
+ * @csc478.req REQ060901 - Forced bet
+ * @csc478.req REQ060902 - Raise not allowed
+ * @csc478.req REQ060903 - Call (match)
+ * @csc478.req REQ060904 - Fold
+ * @csc478.req REQ061000 - Process Round 4 Actions
+ * @csc478.req REQ061001 - Raise (any)
+ * @csc478.req REQ061002 - Call (match)
+ * @csc478.req REQ061003 - Fold
+ * @csc478.req REQ061100 - Process Round 5 Actions
+ * @csc478.req REQ061101 - Raise (any)
+ * @csc478.req REQ061102 - Call (match)
+ * @csc478.req REQ061103 - Fold
+ * @csc478.req REQ061200 - Process Showdown Actions
+ * @csc478.req REQ061201 - Show Cards
+ * @csc478.req REQ061202 - Muck Cards
+ * @csc478.req REQ061400 - Compare player scores to find winner
+ * @csc478.req REQ061500 - Process pot
+ */
 
 public class PokerGame {
 

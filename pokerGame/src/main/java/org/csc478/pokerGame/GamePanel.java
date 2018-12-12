@@ -3,7 +3,7 @@
  *     file: pokerGame\src\main\java\org\csc478\pokerGame\GamePanel.java
  *  created: 2018-12-09 14:58:30
  *       by: Gino Canessa
- * modified: 2018-12-10
+ * modified: 2018-12-11
  *       by: Gino Canessa
  *
  *  summary: Actual UI used by the poker game
@@ -24,7 +24,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Swing JPanel decendent which implements the Poker user interface
+ * The Poker user interface
+ * @csc478.req REQ070102 - Number of players
+ * @csc478.req REQ070103 - Human player
+ * @csc478.req REQ070104 - Humans borrow money
+ * @csc478.req REQ070105 - Start game
+ * @csc478.req REQ070106 - Current player info
+ * @csc478.req REQ070200 - Game Play Screen
+ * @csc478.req REQ070201 - Display Game State
+ * @csc478.req REQ070202 - Round information
+ * @csc478.req REQ070203 - Current hands
+ * @csc478.req REQ070204 - Current player money
+ * @csc478.req REQ070205 - Only allow valid actions
+ * @csc478.req REQ070206 - Allow raises
+ * @csc478.req REQ070207 - Show computer actions
+ * @csc478.req REQ070301 - Show scoring
+ * @csc478.req REQ070302 - Show game results
+ * @csc478.req REQ070303 - Start next hand
  */
 public class GamePanel extends JPanel {
 
