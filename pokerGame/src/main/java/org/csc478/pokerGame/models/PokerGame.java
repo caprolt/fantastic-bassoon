@@ -36,6 +36,13 @@ public class PokerGame {
 
   //#endregion Public Constants . . .
 
+  //#region Private Constants
+
+  private static final int _computerLoanAmount = 1900;
+  private static final int _computerLoanThreshold = 1500;
+
+  //#endregion Private Constants
+
   //#region Public Variables . . .
 
   //#endregion Public Variables . . .
@@ -313,6 +320,55 @@ public class PokerGame {
   }
 
   /**
+   * Get the total debt a player has accrued
+   * @param playerIndex Array index of the player to get the debt of
+   * @return Current  dollars in debt the player is
+   */
+  public int getPlayerDebt(int playerIndex) {
+    return _players[playerIndex].getDebt();
+  }
+
+  /**
+   * Lend a player a specified amount of money
+   * @param playerIndex Array index of the player to lend money to
+   * @param amount Amount of money being lent to the player
+   * @return Array containing two int values, money player now has and debt player now has
+   */
+  public int[] lendMoneyToPlayer(int playerIndex, int amount) {
+    // **** get the current debt of the player ****
+
+    int debt = _players[playerIndex].getDebt();
+
+    // **** add to the debt ****
+
+    debt += amount;
+
+    // **** set new debt ****
+
+    _players[playerIndex].setDebt(debt);
+
+    // **** get current amount of money ****
+
+    int dollars = _players[playerIndex].getDollars();
+
+    // **** add our lending amount ****
+
+    dollars += amount;
+
+    // **** give the money to the player ****
+
+    _players[playerIndex].setDollars(dollars);
+
+    // **** build our return value (dollars, debt) ****
+
+    int retVal[] = {dollars, debt};
+
+    // **** return our array ****
+
+    return retVal;
+  }
+
+  /**
    * Get the current hand for a player
    * @param playerIndex Index of the player within the game
    * @return PlayerHand object with the specified player's current hand
@@ -576,7 +632,24 @@ public class PokerGame {
     _playerActiveFlags = new boolean[_playerCount];
     for (int playerIndex = 0; playerIndex < _playerCount; playerIndex++)
     {
+      // **** check to see if this player has enough money to play ****
+
+      int dollars = _players[playerIndex].getDollars();
+
+      // **** need to check computer players for enough money to play ****
+
+      if ((_players[playerIndex].getIsComputer() == true) && (dollars < _computerLoanThreshold)) {
+        // **** lend money to this player ****
+
+        lendMoneyToPlayer(playerIndex, _computerLoanAmount);
+      }
+
+      // **** player is in the game ****
+      
       _playerActiveFlags[playerIndex] = true;
+
+      // **** create an empty hand for this player ****
+
       _playerHands[playerIndex] = new PlayerHand(_players[playerIndex].getPlayerId(), playerIndex);
     }
 

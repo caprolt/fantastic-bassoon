@@ -36,6 +36,9 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
 
   private static final long serialVersionUID = 2;
   
+  private static final int _loanThreshold = 1500;
+  private static final int _loanAmount = 4000;
+
   private static final int _defaultWidth = 1280;
   private static final int _defaultHeight = 1000;
 
@@ -182,6 +185,47 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
     _pokerGame.PlayerActionShow(0);
   }
 
+  /** Function to handle the Button Press of a Borrow Money action */
+  public void HandleButtonBorrowPress() {
+    // **** get the player's current money ****
+
+    int currentMoney = _pokerGame.getPlayerDollars(0);
+
+    // **** check for too high ****
+
+    if (currentMoney > _loanThreshold) {
+      // **** tell the user ****
+
+      JOptionPane.showMessageDialog(
+        this, 
+        "The House does not want to lend you money at this time!  Spend yours first!",
+        "Request Denied",
+        JOptionPane.INFORMATION_MESSAGE
+        );
+
+      // **** nothing else to do ****
+
+      return;
+    }
+
+    // **** lend money to the player ****
+
+    int loanValues[] = _pokerGame.lendMoneyToPlayer(0, _loanAmount);
+
+    // **** tell the user what's going on ****
+
+    JOptionPane.showMessageDialog(
+      this, 
+      String.format(
+        "The House has lent you $ %d.  You are $ %d in debt.  Win some games!",
+        _loanAmount,
+        loanValues[1]
+        ),
+      "Loan Approved",
+      JOptionPane.INFORMATION_MESSAGE
+      );
+  }
+
   /** Function to handle the Button Press of a Ante action */
   public void HandleButtonAntePress() {
     // **** update the UI ****
@@ -287,6 +331,10 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
 
     _gamePanel.setEnableAddPlayer(false);
 
+    // **** disable the borrow money button ****
+
+    _gamePanel.setEnableBorrow(false);
+
     // **** set ourselves to receive game action notifications ****
 
     _pokerGame.AddGameEventListener(this);
@@ -319,6 +367,10 @@ public class GameWindow extends JFrame implements PropertyChangeListener {
       // **** re-enable the start game button ****
 
       _gamePanel.setEnableStartGame(true);
+
+      // **** re-enable the borrow money button ****
+
+      _gamePanel.setEnableBorrow(true);
 
       // **** disable in-game actions ****
 

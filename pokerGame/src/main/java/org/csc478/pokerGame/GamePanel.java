@@ -111,13 +111,15 @@ public class GamePanel extends JPanel {
 
   private static final String _gamePanelButtonText[] = {
     "Add Player",
-    "Start Game"
+    "Start Game",
+    "Borrow"
   };
 
-  private static final int _gamePanelButtonCount = 2;
+  private static final int _gamePanelButtonCount = 3;
 
   private static final int _gamePanelButtonAddPlayer = 0;
   private static final int _gamePanelButtonStartGame = 1;
+  private static final int _gamePanelButtonBorrow = 2;
 
   private JButton _gamePanelButtons[];
 
@@ -301,6 +303,14 @@ public class GamePanel extends JPanel {
     _gamePanelButtons[_gamePanelButtonAddPlayer].setEnabled(canAddPlayer);
   }
 
+  /**
+   * Enable or disable the Borrow Money button
+   * @param canBorrowMoney True if the button should be enabled, false if it should be disabled
+   */
+  public void setEnableBorrow(boolean canBorrowMoney) {
+    _gamePanelButtons[_gamePanelButtonBorrow].setEnabled(canBorrowMoney);
+  }
+
   //#endregion Public Interface
 
   
@@ -475,6 +485,19 @@ public class GamePanel extends JPanel {
           });
         }
         break;
+
+        case _gamePanelButtonBorrow:
+        {
+          // **** start game button ****
+
+          _gamePanelButtons[buttonIndex].addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+              _gameWindow.HandleButtonBorrowPress();
+            }
+          });
+        }
+        break;
+
       }
 
       // **** add to the UI ****
