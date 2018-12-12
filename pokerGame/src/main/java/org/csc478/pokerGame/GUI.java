@@ -17,7 +17,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
+/**
+ * Prototype UI
+ * @deprecated
+ * @see org.csc478.pokerGame.GameWindow
+ */
+@Deprecated
 public class GUI extends JFrame {
 	
 	/**
