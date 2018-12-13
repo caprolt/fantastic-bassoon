@@ -1314,12 +1314,16 @@ public class PokerGame {
       {
         int handScore = _playerHands[handIndex].getScoreFaceUp();
 
+        System.out.println(String.format("Player: %d, face Up: %d", handIndex, handScore));
+
         if ((handScore < lowScore) && (_playerActiveFlags[handIndex] == true)) 
         {
           lowScore = handScore;
           playerNumber = handIndex;
         }
       }
+
+      System.out.println(String.format("Chose player: %d", playerNumber));
 
       // **** done ****
 

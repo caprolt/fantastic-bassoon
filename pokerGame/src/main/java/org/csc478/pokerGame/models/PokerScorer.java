@@ -380,6 +380,24 @@ public abstract class PokerScorer {
       }
     }
 
+    // **** check for situation of having a partial straight, but not enough cards ****
+
+    if ((highestSoloRank == 0) && (straightHighRank != 0))
+    {
+      // **** have solo no matter what ****
+
+      highestSoloRank = straightHighRank;
+
+      // **** check for second card in straight ****
+
+      if (numberOfCards > 1)
+      {
+        secondSoloRank = highestSoloRank - 1;
+      }
+    }
+
+    // **** check for having a flush ****
+
     boolean hasFlush = ((cardSuits[0] >= 5) ||
                         (cardSuits[1] >= 5) ||
                         (cardSuits[2] >= 5) ||
